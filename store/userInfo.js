@@ -64,6 +64,9 @@ export const actions = {
   // user.userUidはAuthIdとする
   async createUser({ getters, dispatch }, isNewUser) {
     const userUid = getters.user.userUid
+    console.log(userUid)
+    console.log(getters.user)
+
     try {
 
       if (isNewUser) {

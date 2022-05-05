@@ -24,7 +24,8 @@ export const mutations = {
   },
   logoutReset(state){
     state.myProfile.userName = '';
-    state.introduction.myProfile.introduction = '';
+    state.myProfile.introduction = '';
+    state.myProfile.iconURL = 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg'
   }
 
   }
@@ -33,7 +34,8 @@ export const mutations = {
 export const actions = {
   async getUserInfo({ commit }, uid) {
     try {
-      const docRef = doc(db, "users", uid);
+      const docRef = doc(db, "users", uid)
+      console.log( docRef )
       const docSnap = await getDoc(docRef)
       commit('setUserInfo', docSnap.data())
       console.log( docSnap.data() )

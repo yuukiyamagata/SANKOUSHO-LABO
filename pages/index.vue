@@ -52,7 +52,6 @@
                         :alt="`${sankousho.iconURL} avatar`"
                           :src="sankousho.iconURL"
                           class="cursor elevation-6"
-                          @click="goToProfile"
                       ></v-img>
                     </v-list-item-avatar>
                   </v-list-item>
@@ -147,9 +146,6 @@ export default {
   methods:{
     pageChange( pageNumber ){
     this.displayLists = this.postRecommendations.slice(this.pageSize*( pageNumber  -1), this.pageSize*( pageNumber ));
-  },
-  goToProfile(){
-    console.log('go')
   },
   goToDetailPage(sankousho){
     this.$router.push(`/books/${sankousho.recommendation_book_id }`)
