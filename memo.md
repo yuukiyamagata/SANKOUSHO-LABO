@@ -15,50 +15,6 @@ https://www.youtube.com/watch?v=LrhYbXOGLZo&t=212s&ab_channel=%E3%83%97%E3%83%AD
 Index画面のハートアイコン
 ログイン時に既にログイン済みならどうするか
 
-
-
-onAuthStateChanged
-引数に認証の状態が変わった時に呼び出されるコールバック関数を受け取れる
-ログインやログアウトした際に引数の関数がよばれる
-ログインした際には 引数にuserのオブジェクトが渡ってくる
-
-ログアウトした際にはにnullが渡ってくくる
-
-
-
-~~~js
-//ログインしているかどうかの情報を持たせる
-
-import { getAuth, signInWithEmailAndPassword, signOut} from 'firebase/auth'
-
-export const state = () => ({
-  isLoggedIn: false,
-  userUid: '',
-  email: '',
-})
-
-// stateの参照はgetters
-
-export const getters = {
-  getLoggedIn: state => !!state.isLoggedIn, // !!で真偽値にキャスト
-  getUserUid:state => state.userUid,
-  getEmail: state => state.email
-
-}
-
-export const mutations = {
-  setLoginState( state, loggedIn ){
-    state.isLoggedIn = loggedIn
-  },
-  setUserUid( state, userUid ){
-    state.userUid = userUid
-  },
-  setEmail( state, email ){
-    state.email = email
-  }
-}
-
-
 export const actions = {
   async login( { commit }, payload) {
     const auth = getAuth(this.$firebase)
@@ -100,27 +56,11 @@ export const actions = {
 ~~~
 
 
-ページ表示時
-
-ログインしてるかどうか確認
--> ログインしていればそのまま表示
--> していなければログインページにリダイレクト
-
-ログイン必要な全てのページで確認が必要
-
-middleware 読み込み時に確証状態の確認
-
-vuex 確証状態の保持
 
 
-input checkBox checkedプロパティ
-チェックされた状態であるかどうかを示す値を取得または設定します。
-チェックボックスがONの場合 True、そうでなければ False。デフォルト値は False です。
 
-未ログインならリダイレクト
-middleware/authenticatd.jsを作成
-middlewareはNuxtの機能なのでcontextを使える
-pliginは$をつけて取得できる
+
+
 
 export default function({
   $firebase, store, state, redirect
@@ -134,10 +74,7 @@ export default function({
   }
 
 }
-リロードでstateが消える問題について
-onAuthStateChanged()を実行
-するとログインしているユーザーついての情報が得られる
-ログイン状態であればStateに保存してからリダイレクトする
+
 
    middleware/authenticatd.js
 
@@ -211,22 +148,6 @@ if (user !== null) {
 
 
 
-## ログインユーザーの取得
-onAuthStateChangedの説明
-引数に認証の状態が変わった時に呼び出されるコールバック関数を受け取れる
-ログインやログアウトした際に引数の関数がよばれる
-ログインした際には 引数にuserのオブジェクトが渡ってくる
-
-auth.onAuthStateChanged( user => {
-  if( user ){
-    setLoginUser(user)
-    if(this.$router.currentRoute.name === 'Home')
-    router.push('/')
-  }else {
-    this.deleteLoginUser(user)
-    this.router.push('/login')
-  }
-})
 
 ログインによる分岐
 
