@@ -4,7 +4,7 @@ import { db } from '@/plugins/firebase.js'
 
 
 export const state = () => ({
-  profileInfo: {
+  myProfile: {
     userName: '',
     introduction: '',
     // twitterURL: '',
@@ -13,15 +13,19 @@ export const state = () => ({
 })
 
 export const getters = {
-  profileInfo: state => state.profileInfo
+  myProfile: state => state.myProfile
 }
 
 export const mutations = {
-  setUserInfo(state, profileInfo) {
-    state.profileInfo.userName = profileInfo.userName;
-    state.profileInfo.introduction = profileInfo.introduction;
-    state.profileInfo.iconURL = profileInfo.iconURL;
+  setUserInfo(state, myProfile) {
+    state.myProfile.userName = myProfile.userName;
+    state.myProfile.introduction = myProfile.introduction;
+    state.myProfile.iconURL = myProfile.iconURL;
   },
+  logoutReset(state){
+    state.myProfile.userName = '';
+    state.introduction.myProfile.introduction = '';
+  }
 
   }
 
@@ -39,6 +43,9 @@ export const actions = {
   },
   async editMyPage( { commit }, myPageInfo){
 
+  },
+  logoutReset({ commit }){
+    commit('logoutReset')
   }
 }
 

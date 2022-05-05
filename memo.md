@@ -207,10 +207,6 @@ getters {
     commit('myPageProfile/logoutReset', null, { root: true })
     this.$router.push('/')
   },
-  // ログイン状態にする
-  authCheck({ commit }) {
-    commit('authCheck')
-  }
 }
 
 

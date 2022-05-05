@@ -58,7 +58,8 @@ export const actions = {
             }
           }
       },
-      async signInWithGoogle({ dispatch, commit }){
+
+      async signInWithGoogle({ dispatch }){
         const provider = new GoogleAuthProvider();
         try {
             const result = await signInWithPopup(auth, provider)
@@ -95,10 +96,11 @@ export const actions = {
       async logout({ commit }) {
         await signOut(auth).then(() => {
           commit('setLoginState', false)
-          // commit('userInfo/logoutReset', null, { root: true })
-          // commit('post/logoutReset', null, { root: true })
+          commit('userInfo/logoutReset', null, { root: true })
+          commit('post/logoutReset', null, { root: true })
+          commit('myPageInfo/logoutReset', null, { root: true })
           // commit('getPosts/logoutReset', null, { root: true })
-          // commit('myPageInfo.js/logoutReset', null, { root: true })
+          this.$router.push('/')
         })
         .catch(e => {
           console.log(e) // eslint-disable-line
