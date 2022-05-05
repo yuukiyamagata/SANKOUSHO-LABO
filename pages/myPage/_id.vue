@@ -13,8 +13,9 @@
                       ></v-img>
                     </v-avatar>
                     <div class="ml-4">
-                      <p class="pt-2" v-text="userName"></p>
-                      <v-img :src="image_src" class="twitter-icon-color" height="30px" width="30px"/>
+                      <p class="pt-2 text-h5" v-text="userName"></p>
+                      <p>About me</p>
+                      <!-- <v-img :src="image_src" class="twitter-icon-color" height="30px" width="30px"/> -->
                     </div>
                   </v-col>
 
@@ -34,7 +35,6 @@
         </v-col>
         <v-col cols="2">
           <v-btn
-            color="indigo white--text"
             outlined
             elevation="0"
             @click="goToEditMypage"
