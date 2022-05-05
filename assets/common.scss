@@ -1,0 +1,37 @@
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .logo {
+    object-fit: cover;
+    width: 60px;
+    height: 40px;
+  }
+
+  .cursor {
+    cursor: pointer;
+  }
+
+  .fix-width {
+    width: 100%;
+    height: 100%;
+  }
+
+  .bg-main {
+    background-color: ghostwhite;
+  }
+
+  .link-border-line-none {
+    text-decoration: none;
+  }
+
+  .link {
+    text-decoration: none;
+  }
+
+
+
+  // コンポーネント
+
