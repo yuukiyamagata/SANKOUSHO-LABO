@@ -88,7 +88,7 @@
         <v-container>
           <v-row justify="center" align="center">
             <v-col
-              v-for="result in serachResults"
+              v-for="result in searchResults"
               :key="result.id"
               cols="12">
                   <v-card
@@ -143,12 +143,12 @@
 <script>
 import axios from 'axios'
 import { collection, setDoc, doc, serverTimestamp } from 'firebase/firestore'
-import { db } from '@/plugins/firebase.js'
+import { db } from '@/plugins/firebase'
 export default {
   data(){
     return {
       searchWord: '',
-      serachResults:[],
+      searchResults:[],
       image_src_noImage: require('@/static/NoImage.png'),
       valid: false,
       // データベースに登録
@@ -187,10 +187,16 @@ export default {
         dialog: false,
     }
   },
-  created(){
-    // ここでログインユーザのIDを取得する
-    // まずログインしているのかどうか
-    // ログインユーザーのデータをstoreから取ってくる
+  computed:{
+    loginUserUid(){
+      return this.$store.getters["userInfo/loginUserInfo"].loginUserUid;
+    },
+    iconURL(){
+      return this.$store.getters["userInfo/loginUserInfo"].iconURL;
+    },
+    userName(){
+      return this.$store.getters["userInfo/loginUserInfo"].userName;
+    }
   },
   methods:{
     // 検索結果０件の処理を書く
@@ -219,9 +225,9 @@ export default {
               const publisherName = book.Item.publisherName
               const imageUrl = book.Item.largeImageUrl
               const itemUrl = book.Item.itemUrl
-              const id = this.serachResults.length + 1
+              const id = this.searchResults.length + 1
 
-              this.serachResults.push({
+              this.searchResults.push({
                 id,
                 title,
                 author: author ? author: publisherName, // eslint-disable-line
@@ -245,11 +251,11 @@ export default {
       this.sankousho.itemUrl = item.itemUrl
 
       this.dialog = false
-      this.serachResults = [];
+      this.searchResults = [];
     },
     closeDialog(){
       this.dialog = false
-      this.serachResults = []
+      this.searchResults = []
     },
     async postBook(){
       const message = 'この内容で投稿してもよろしいでしょうか?'
@@ -266,14 +272,14 @@ export default {
             recommendation_book_reason: this.sankousho.reason,
             recommendation_book_author: this.sankousho.author,
             created_at: serverTimestamp(),
-            post_user_name: 'Yuuki',
-            post_user_uid: '5dOB0RSHBVO5r0rwEDvbeJE4xm53',
-            iconURL: 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg'
+            post_user_name: this.userName,
+            post_user_uid: this.loginUserUid,
+            iconURL: this.iconURL,
           }
           await setDoc(postRef, bookData)
           alert('投稿に成功しました！')
         }catch( error ){
-          console.error ( error )
+          alert("投稿に失敗しました。")
         }
         this.sankousho = {
           title: '',
@@ -284,8 +290,8 @@ export default {
           itemUrl: '',
         }
         this.searchWord = ''
-        this.image_src_noImage = require('@/static/NoImage.png')
         this.$router.push('/')
+        this.image_src_noImage = require('@/static/NoImage.png')
       },
   },
 };

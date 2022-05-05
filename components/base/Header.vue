@@ -117,8 +117,7 @@ export default {
     }
   },
   created(){
-      const currentUser = this.$store.getters['userInfo/user']
-      this.currentUser = currentUser;
+      this.currentUser = this.$store.getters['userInfo/user']
   },
   methods:{
     navClick(action){
@@ -134,18 +133,25 @@ export default {
       }
 
       if(action === 'goToMyPage'){
-        const uid = auth.currentUser.uid
-        const user = auth.currentUser
-        if(user.emailVerified === true){
+        if(this.checkAuth()){
+          const uid = auth.currentUser.uid
           this.$router.push(`/mypage/${uid}`)
+        }else{
+          alert("確証のお願い")
         }
       }
-
     },
     createPost(){
-
+      if(this.checkAuth()){
+        this.$router.push('/posts/create')
+      }else{
+        alert("確証のお願い")
+      }
       // User情報の確認認可しているかどうか
-      this.$router.push('/posts/create')
+    },
+    checkAuth(){
+      const user = auth.currentUser
+      return user.emailVerified
     }
   }
 
