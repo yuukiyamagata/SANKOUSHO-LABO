@@ -44,6 +44,11 @@ export const mutations = {
   },
   noBook(state){
     state.noBook = true
+  },
+  logoutReset(state){
+    state.recommendationPosts = null;
+    state.filteredRecommendationPosts = null;
+    state.noBook = false;
   }
 }
 
@@ -83,6 +88,9 @@ export const actions = {
       // location.reload();
       console.error( e )
     }
+  },
+  logoutReset({ commit }){
+    commit("logoutReset")
   }
 }
 

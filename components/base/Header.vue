@@ -105,6 +105,7 @@ export default {
         {name: 'ログアウト',icon: 'mdi-logout', action: 'logout'},
         {name: '設定', icon: 'mdi-cogs', action: 'settings'},
       ],
+      currentUser: '',
     }
   },
   computed:{
@@ -116,11 +117,8 @@ export default {
     }
   },
   created(){
-    const isLoggedIn = this.$store.getters['auth/isLoggedIn']
-    if(isLoggedIn){
-      const currentUserUid = this.$store.getters['userInfo/user'].userUid
-      console.log( currentUserUid )
-    }
+      const currentUser = this.$store.getters['userInfo/user']
+      this.currentUser = currentUser;
   },
   methods:{
     navClick(action){
@@ -130,22 +128,22 @@ export default {
       }
 
       if(action === 'logout'){
-        const message = 'ログアウトしますか？'
-        const result = confirm(message)
-        if(!result) return // eslit-disable-line;
-        console.log('ログアウト処理へ')
-        }
+        const result = confirm('ログアウトしますか？')
+        if(!result) return // eslint-disable-line;
+        this.$store.dispatch("auth/logout")
+      }
 
-        if(action === 'goToMyPage'){
-          const uid = auth.currentUser.uid
-          const user = auth.currentUser
-          if(user.emailVerified === true){
-            this.$router.push(`/mypage/${uid}`)
-          }
+      if(action === 'goToMyPage'){
+        const uid = auth.currentUser.uid
+        const user = auth.currentUser
+        if(user.emailVerified === true){
+          this.$router.push(`/mypage/${uid}`)
         }
+      }
 
     },
     createPost(){
+
       // User情報の確認認可しているかどうか
       this.$router.push('/posts/create')
     }

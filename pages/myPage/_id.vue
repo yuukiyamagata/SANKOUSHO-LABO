@@ -5,13 +5,11 @@
         <v-col cols="9">
             <v-row dense>
               <v-col cols="12">
-              <!-- ログインユーザーの画像が入る -->
                 <v-row>
                   <v-col cols="12" class="d-flex">
-                    <v-avatar size="70" color="primary" class="pt-2">
+                    <v-avatar size="70">
                       <v-img
-                        src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-                        height="200px"
+                        :src="iconURL"
                       ></v-img>
                     </v-avatar>
                     <div class="ml-4">
@@ -48,9 +46,13 @@
     <div class="userInfo">
       <v-divider></v-divider>
         <v-tabs>
-          <v-tab @click="goToHome">Home</v-tab>
-          <v-tab @click="goMyPost">私がおすすめした参考書</v-tab>
-          <v-tab @click="goToFav">お気に入りした参考書</v-tab>
+        <v-tab
+          v-for="tab in tabMenu"
+          :key="tab.tabText"
+          @click="changeTabMenu(tab.link)"
+          >
+            {{ tab.tabText }}
+        </v-tab>
       </v-tabs>
       <NuxtChild />
     </div>
@@ -63,37 +65,49 @@
   export default {
     data(){
       return {
-        image_src: require('@/static/TwitterLogo.png'),
-        mypageUid: '',
+        tabMenu:[
+          {tabText: 'Home', link: 'home'},
+          {tabText: 'favorite', link: 'favorite'},
+          {tabText: 'MyPost', link: 'myPost'},
+        ],
+        image_src: require("@/static/TwitterLogo.png"),
+        myPageUid: '',
       }
     },
     computed:{
       userName(){
-        return this.$store.getters["mypageInfo/profileInfo"].userName
+        return this.$store.getters["myPageInfo/myProfile"].userName
       },
       introduction(){
-        return this.$store.getters["mypageInfo/profileInfo"].introduction
+        return this.$store.getters["myPageInfo/myProfile"].introduction
+      },
+      iconURL(){
+        return this.$store.getters["myPageInfo/myProfile"].iconURL
       }
     },
     created(){
-      this.mypageUid = this.$route.params.id
+      this.myPageUid = this.$route.params.id
       // プロフィール情報の取得
-      this.$store.dispatch("mypageInfo/getUserInfo", this.mypageUid)
+      this.$store.dispatch("myPageInfo/getUserInfo", this.myPageUid)
     },
     methods:{
       // タブメニューリファクタリング
       goToEditMypage(){
-        this.$router.push(`/myPage/mypageEdit/${this.mypageUid}`)
+        this.$router.push(`/myPage/myPageEdit/${this.myPageUid}`)
       },
-      goToHome(){
-        this.$router.push(`/mypage/${this.mypageUid}`)
-      },
-      goMyPost(){
-      this.$router.push(`/mypage/${this.mypageUid}/myPost`)
-      },
-      goToFav(){
-        this.$router.push(`/mypage/${this.mypageUid}/favorite`)
-      },
+      changeTabMenu(link){
+        switch(link){
+          case 'home':
+            this.$router.push(`/myPage/${this.myPageUid}`);
+            break;
+          case 'myPost':
+            this.$router.push(`/myPage/${this.myPageUid}/myPost`);
+            break;
+          case 'favorite':
+            this.$router.push(`/myPage/${this.myPageUid}/favorite`);
+            break;
+        }
+      }
     }
   }
 </script>

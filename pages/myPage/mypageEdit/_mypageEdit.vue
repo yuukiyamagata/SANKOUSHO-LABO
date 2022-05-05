@@ -1,5 +1,5 @@
 <template>
-  <v-container class="mx-auto edit-mypage-width" fluid>
+  <v-container class="mx-auto edit-myPage-width" fluid>
     <v-row class="d-flex flex-column justify-space-between">
     <v-form ref="form" v-model="valid">
       <v-col cols="12">
@@ -16,14 +16,16 @@
       </v-col>
       <v-col cols="6" class="mb-4">
         <p class="text-caption">アイコン</p>
-        <v-avatar color="primary" class="my-n14" size="56"></v-avatar>
+        <v-avatar class="my-n14">
+          <v-img :src="myProfile.iconURL"></v-img>
+        </v-avatar>
         <v-btn small class="d-block mt-5" elevation="0">選択</v-btn>
 
       </v-col>
       <v-col cols="12" md="9">
         <p class="text-caption">ユーザー名</p>
         <v-text-field
-            v-model="myPageInfo.userName"
+            v-model="myProfile.userName"
             class="mt-n4"
             placeholder="ユーザー名を入力"
             dense
@@ -34,7 +36,7 @@
       <v-col cols="12" md="9">
         <p class="text-caption">プロフィール</p>
         <v-textarea
-          v-model="myPageInfo.introduction"
+          v-model="myProfile.introduction"
           class="mt-n4"
           placeholder="プロフィールを入力（最大200文字）"
           dense
@@ -68,41 +70,41 @@ export default {
   layout: 'empty',
   data(){
     return {
-      uid: '',
+      loginUserUid: '',
       image_src: require('@/static/logo.png'),
       valid: false,
       userNameRules: [
         (v) => !!v || "ユーザー名を入力してください",
-        (v) => (v && v.length <= 15) || "最大20文字です。",
+        (v) => (v && v.length <= 20 ) || "最大20文字です。",
       ],
       introductionRules:[
-        (v) => v.length <= 400 || "最大400文字です"
+        (v) => (v && v.length <= 400) || "最大400文字です"
       ],
-      myPageInfo:{
+      myProfile:{
         userName:'',
         introduction: '',
-        // iconURL: '',
-        twitterURl: '',
+        iconURL: '',
+        twitterURL: '',
       },
     }
   },
   created(){
-    const uid = this.$route.params.myPageEdit
-    this.uid = uid
-    this.myPageInfo.userName = this.$store.getters['mypageInfo/profileInfo'].username
-    this.myPageInfo.introduction = this.$store.getters['mypageInfo/profileInfo'].introduction
-    // this.mypageInfo.iconURL = this.$store.getters['mypageInfo/profileInfo'].iconURL
-    this.myPageInfo.twitterURL = this.$store.getters['mypageInfo/profileInfo'].twitterURL
+    const loginUserUid = this.$route.params.myPageEdit
+    this.loginUserUid = loginUserUid
+    this.myProfile.userName = this.$store.getters['myPageInfo/myProfile'].userName
+    this.myProfile.introduction = this.$store.getters['myPageInfo/myProfile'].introduction
+    this.myProfile.iconURL = this.$store.getters['myPageInfo/myProfile'].iconURL
+    this.myProfile.twitterURL = this.$store.getters['myPageInfo/myProfile'].twitterURL
   },
   methods:{
     back(){
       this.$router.back();
     },
     saveEditProfile(){
-      this.$store.dispatch('mypage/editMyPage', this.myPageInfo)
+      this.$store.dispatch('myPageInfo/editMyPage', this.myPageInfo)
 
       alert('プロフィールを保存しました')
-      this.$router.push(`/myPage/${this.uid}`)
+      this.$router.push(`/myPage/${this.loginUserUid}`)
     }
   }
 }
@@ -111,7 +113,7 @@ export default {
 
 <style lang="scss" scoped>
 
-.edit-mypage-width {
+.edit-myPage-width {
   max-width: 600px
 }
 

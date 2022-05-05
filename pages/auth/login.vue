@@ -96,7 +96,7 @@ export default {
       this.$store.dispatch('auth/login',{email: this.email, password: this.password})
     },
     loginWithGoogle() {
-      this.$store.dispatch('auth/singInWithGoogle')
+      this.$store.dispatch('auth/signInWithGoogle')
     }
   }
 

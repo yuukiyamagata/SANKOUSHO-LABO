@@ -18,6 +18,7 @@ export const state = () => ({
     userName: '',
     introduction : '',
     iconURL: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+    loginUserUid:'',
     twitterURL: ''
   }
 })
@@ -38,16 +39,18 @@ export const mutations = {
   fetchUserInfo(state, userData){
     state.loginUserInfo.userName = userData.userName
     state.loginUserInfo.iconURL = userData.iconURL
+    state.loginUserInfo.loginUserUid = userData.uid
   },
   logoutReset( state ){
     state.user = {
-      uid: '',
+      userUid: '',
       userName: '',
       iconURL: '',
       emailVerified: ''
     }
-      state.profile = {
+      state.loginUserInfo = {
         userName: '',
+        loginUserUid:'',
         iconURL: "https://example.com/jane-q-user/profile.jpg",
       }
   }
@@ -65,7 +68,7 @@ export const actions = {
 
       if (isNewUser) {
         // 初回ログインの場合の分岐
-        const userDocRef =  doc(db, 'users', userUid)
+        const userDocRef =  doc(db, "users", userUid)
         // eslint-disable-next-line no-unused-vars
         const documentRef = await setDoc(userDocRef, {
           userName: getters.user.userName,
