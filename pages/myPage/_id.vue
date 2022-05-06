@@ -14,7 +14,6 @@
                     </v-avatar>
                     <div class="ml-4">
                       <p class="pt-2 text-h5" v-text="userName"></p>
-                      <!-- <v-img :src="image_src" class="twitter-icon-color" height="30px" width="30px"/> -->
                     </div>
                   </v-col>
 
@@ -75,20 +74,20 @@
     },
     computed:{
       userName(){
-        return this.$store.getters["myPageInfo/myProfile"].userName
+        return this.$store.getters["myPage/myProfile"].userName
       },
       introduction(){
-        return this.$store.getters["myPageInfo/myProfile"].introduction
+        return this.$store.getters["myPage/myProfile"].introduction
       },
       iconURL(){
-        return this.$store.getters["myPageInfo/myProfile"].iconURL
+        return this.$store.getters["myPage/myProfile"].iconURL
       }
     },
     created(){
       this.myPageUid = this.$route.params.id
-      this.visitorUid = this.$store.getters["userInfo/user"]
-      this.$store.dispatch("myPageInfo/getUserInfo", this.myPageUid)
-      this.$store.dispatch("myPageInfo/initMyPosts")
+      this.visitorUid = this.$store.getters["userInfo/user"].userUid
+      this.$store.dispatch("myPage/getUserInfo", this.myPageUid)
+      this.$store.dispatch("myPage/initMyPosts")
     },
     methods:{
       goToEditMyPage(){

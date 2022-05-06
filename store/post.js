@@ -52,6 +52,10 @@ export const mutations = {
 }
 
 export const actions = {
+  initialize( { commit }){
+    // 読み込み時のVuexの初期化処理
+    commit('initialize')
+  },
   async getPost({ commit }){
     const postRef = collection(db, "post_recommendations")
     const postQuery = query(postRef, orderBy("created_at", "desc"));
@@ -65,10 +69,6 @@ export const actions = {
       alert('データの取得に失敗しました')
       location.reload();
     }
-  },
-  initialize( { commit }){
-    // 読み込み時のVuexの初期化処理
-    commit('initialize')
   },
   async filterSubject( { commit }, subject){
     const postRef = collection(db, "post_recommendations")

@@ -117,9 +117,9 @@ export default {
   computed:{
     postRecommendations(){
       if(!this.categorySearch){
-        return this.$store.getters["post/recommendationPosts"]
+        return this.$store.getters['post/recommendationPosts']
       }else{
-        return this.$store.getters["post/filteredRecommendationPosts"]
+        return this.$store.getters['post/filteredRecommendationPosts']
       }
     },
     // length(){
@@ -129,19 +129,15 @@ export default {
     //   return this.postRecommendations.slice(this.pageSize*(this.page -1), this.pageSize*(this.page));
     // },
     subjects(){
-      return this.$store.getters["post/subjects"]
+      return this.$store.getters['post/subjects']
     },
     noBook(){
-      return this.$store.getters["post/noBook"]
+      return this.$store.getters['post/noBook']
     }
   },
-  async created(){
-    this.$store.dispatch("post/initialize")
-    try{
-      await this.$store.dispatch("post/getPost")
-    }catch( e ){
-      console.error( e )
-    }
+  created(){
+    this.$store.dispatch('post/initialize')
+    this.$store.dispatch('post/getPost')
   },
   methods:{
     pageChange( pageNumber ){
@@ -156,7 +152,7 @@ export default {
       return
     }
     this.categorySearch = true
-    this.$store.dispatch("post/filterSubject", subject)
+    this.$store.dispatch('post/filterSubject', subject)
     }
   }
 

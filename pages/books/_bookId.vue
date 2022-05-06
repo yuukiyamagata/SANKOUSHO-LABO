@@ -1,6 +1,5 @@
 <template>
     <div class="book-page-width mx-auto">
-      {{ $route.params.id }}
       <v-container fluid class="my-10">
         <v-row>
           <v-col cols="4">
@@ -69,7 +68,7 @@
                         </v-list-item-avatar>
 
                         <v-list-item-content>
-                          <div class="text-overline mb-4">
+                          <div  class="text-overline mb-4">
                             @{{ bookDetailInfo.post_user_name }}
                           </div>
                         </v-list-item-content>
@@ -78,23 +77,23 @@
                     <v-card-text>
                       {{ bookDetailInfo.recommendation_book_reason }}
                     </v-card-text>
-                    <v-card-actions>
-                      <v-btn
+                    <v-card-actions class="pb-6">
+                      <v-row align="center">
+                        <v-btn
                         text
                         color="indigo accent-4"
                         class="mb-4"
                         @click="$router.push('/')"
-                      >
+                        >
                         一覧へ戻る
-                      </v-btn>
-
+                        </v-btn>
+                        <v-spacer></v-spacer>
                         <v-btn
-                          class="mx-2"
+                          v-if="!isRegistered"
+                          class="mr-4"
                           fab
                           dark
                           color="indigo"
-                          absolute
-                          right
                           small
                           @click="registerFavPost"
                           >
@@ -102,7 +101,14 @@
                               mdi-plus
                             </v-icon>
                           </v-btn>
+
+                          <v-icon v-else x-large left color="yellow">
+                            mdi-star
+                          </v-icon>
+                      </v-row>
                     </v-card-actions>
+
+
                     </v-sheet>
               </v-card>
             </v-sheet>
@@ -126,7 +132,7 @@
                 お気に入りに登録するには、アカウントの新規登録、または、ログインが必要です。<br>
                 こちらからアカウントの登録及び、ログインをしてください。
             </v-card-text>
-            <v-card-action class="px-8">
+            <v-card-actions class="pb-8">
               <v-row
                   align="center"
                   justify="center"
@@ -135,7 +141,7 @@
                     depressed
                     color="primary"
                     class="mr-4"
-                    @click="login"
+                    @click="goToLogin"
                   >
                     ログイン
                   </v-btn>
@@ -143,12 +149,12 @@
                     class="white--text"
                     depressed
                     color="teal"
-                    @click="register"
+                    @click="goToRegister"
                   >
                     新規登録
                   </v-btn>
                 </v-row>
-            </v-card-action>
+            </v-card-actions>
 
 
             <v-divider></v-divider>
@@ -167,71 +173,66 @@
       </v-dialog>
     </div>
 
+
   </div>
 </template>
 
 
 
 <script>
-// import { collection, addDoc  } from "firebase/firestore"
-// import { db, auth } from "@/plugins/firebase"
+import { collection, addDoc  } from "firebase/firestore"
+import {  db } from "@/plugins/firebase"
 export default {
   data(){
     return{
       bookId:'',
       dialog: false,
-      isRegistered: false,
     }
   },
   computed:{
     bookDetailInfo(){
       return this.$store.getters['post/recommendationPosts'].find(post => post.recommendation_book_id === this.bookId)
     },
-    loginUserInfo(){
-      return this.$store.getters['userInfo/loginUserInfo']
-    },
     userInfo(){
-      return this.$store.getters["userInfo/user"]
+      return this.$store.getters['userInfo/user']
+    },
+    loginUserUid(){
+      return this.$store.getters['userInfo/loginUserInfo'].loginUserUid
     },
     isLoggidIn(){
-      return this.$store.getters["auth/isLoggedIn"]
+      return this.$store.getters['auth/isLoggedIn']
+    },
+    isRegistered(){
+      const favoritePosts =  this.$store.getters['myPage/myFavoritePosts']
+      return favoritePosts.some(favPost => favPost.postedID === this.bookId)
     }
   },
   created(){
-    this.bookId = this.$route.params.bookId
+    this.bookId = this.$route.params.bookId;
+    this.$store.dispatch('myPage/initMyFavoritePosts');
+    this.$store.dispatch('myPage/fetchMyFavoritePosts', this.loginUserUid);
   },
   methods:{
-    registerFavPost(){
-
-      if(!this.isLoggidIn){
-          this.dialog = true;
-          return;
-        }
-
-        alert("good");
-
-
-    //   const result = window.confirm('お気に入りに登録しますか?')
-    //   if(!result) return
-    //   const favoritePost ={
-    //     post_id:  this.bookDetailInfo.recommendation_book_id,
-    //     posted_book_title: this.bookDetailInfo.recommendation_book_title,
-    //     posted_book_imageURL: this.bookDetailInfo.recommendation_book_imageURL
-    //   }
-    // // すでにお気に入りした記事かどうか調べる必要がある
-    // const user = auth.currentUser
-    // const favoritePostRef =  collection(db, 'users', user.uid, 'favorite_posts')
-    // try {
-    //   await addDoc(favoritePostRef, favoritePost)
-    //   alert('お気に入りに登録しました')
-    // }catch(e){
-    //   console.log(e)
-    // }
+  async registerFavPost(){
+      const result = window.confirm('お気に入りに登録しますか?')
+      if(!result) return
+      const favoritePost ={
+        post_id:  this.bookDetailInfo.recommendation_book_id,
+        posted_book_title: this.bookDetailInfo.recommendation_book_title,
+        posted_book_imageURL: this.bookDetailInfo.recommendation_book_imageURL
+      }
+      const favoritePostRef =  collection(db, 'users', this.loginUserUid, 'favorite_posts')
+      try {
+        await addDoc(favoritePostRef, favoritePost)
+        alert('お気に入りに登録しました')
+      }catch(e){
+        console.log(e)
+      }
   },
-  login(){
+  goToLogin(){
     this.$router.push('/auth/login');
   },
-  register(){
+  goToRegister(){
     this.$router.push('/auth/register');
   }
 }
