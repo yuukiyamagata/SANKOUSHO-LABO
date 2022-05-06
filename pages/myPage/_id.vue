@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto mypage-width mt-12">
+  <div class="mx-auto myPage-width mt-12">
     <v-container class="px-12">
       <v-row>
         <v-col cols="9">
@@ -13,8 +13,8 @@
                       ></v-img>
                     </v-avatar>
                     <div class="ml-4">
-                      <p class="pt-2" v-text="userName"></p>
-                      <v-img :src="image_src" class="twitter-icon-color" height="30px" width="30px"/>
+                      <p class="pt-2 text-h5" v-text="userName"></p>
+                      <!-- <v-img :src="image_src" class="twitter-icon-color" height="30px" width="30px"/> -->
                     </div>
                   </v-col>
 
@@ -22,22 +22,20 @@
               </v-col>
               <v-col cols="12">
                 <v-card elevation="0">
-                  <v-card-text v-text="introduction">
+                  <v-card-title>About me</v-card-title>
+                  <v-card-text class="font-weight-bold pa-2" v-text="introduction">
                   </v-card-text>
                 </v-card>
               </v-col>
-
-
 
             </v-row>
 
         </v-col>
         <v-col cols="2">
           <v-btn
-            color="indigo white--text"
             outlined
             elevation="0"
-            @click="goToEditMypage"
+            @click="goToEditMyPage"
             >編集</v-btn>
         </v-col>
       </v-row>
@@ -54,7 +52,7 @@
             {{ tab.tabText }}
         </v-tab>
       </v-tabs>
-      <NuxtChild />
+      <NuxtChild class="mt-6" />
     </div>
   </div>
 </template>
@@ -67,11 +65,12 @@
       return {
         tabMenu:[
           {tabText: 'Home', link: 'home'},
-          {tabText: 'favorite', link: 'favorite'},
           {tabText: 'MyPost', link: 'myPost'},
+          {tabText: 'favorite', link: 'favorite'},
         ],
         image_src: require("@/static/TwitterLogo.png"),
         myPageUid: '',
+        visitorUid:'',
       }
     },
     computed:{
@@ -87,12 +86,12 @@
     },
     created(){
       this.myPageUid = this.$route.params.id
-      // プロフィール情報の取得
+      this.visitorUid = this.$store.getters["userInfo/user"]
       this.$store.dispatch("myPageInfo/getUserInfo", this.myPageUid)
+      this.$store.dispatch("myPageInfo/initMyPosts")
     },
     methods:{
-      // タブメニューリファクタリング
-      goToEditMypage(){
+      goToEditMyPage(){
         this.$router.push(`/myPage/myPageEdit/${this.myPageUid}`)
       },
       changeTabMenu(link){
@@ -114,12 +113,8 @@
 
 <style>
 
-.mypage-width {
+.myPage-width {
   max-width: 900px;
-}
-
-.twitter-icon-color {
-  color: rgba(29,161,242);
 }
 
 

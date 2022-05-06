@@ -99,7 +99,7 @@ export default {
       img_src: require('@/static/logo.png'),
       navLists:[
         {name: 'About Page', icon: 'mdi-book-open-blank-variant', to: '/introduction'},
-        {name: 'ホーム', icon: 'mdi-home', to: '/'},
+        {name: 'Home', icon: 'mdi-home', to: '/'},
         {name: '投稿', icon: 'mdi-pencil', to: '/posts/create'},
         {name: 'マイページ',icon: 'mdi-account', action: 'goToMyPage'},
         {name: 'ログアウト',icon: 'mdi-logout', action: 'logout'},

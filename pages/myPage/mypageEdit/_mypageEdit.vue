@@ -44,19 +44,9 @@
           :rules="introductionRules"
         ></v-textarea>
       </v-col>
-      <v-col cols="12" md="9">
-        <p class="text-caption">Twitter URl</p>
-        <v-text-field
-          label="(任意)"
-          class="mt-n4"
-          dense
-          outlined
-        >
-        </v-text-field>
-      </v-col>
       <v-col cols="12">
         <v-btn color="info" small elevation="0" @click="saveEditProfile">保存</v-btn>
-          <v-btn class="ml-4"  small elevation="0" @click="back">戻る</v-btn>
+          <v-btn class="ml-4"  small elevation="0" @click="goToMyPage">戻る</v-btn>
       </v-col>
 
     </v-form>
@@ -84,26 +74,24 @@ export default {
         userName:'',
         introduction: '',
         iconURL: '',
-        twitterURL: '',
       },
     }
   },
   created(){
-    const loginUserUid = this.$route.params.myPageEdit
-    this.loginUserUid = loginUserUid
+    this.loginUserUid = this.$route.params.myPageEdit
+    console.log(this.loginUserUid)
     this.myProfile.userName = this.$store.getters['myPageInfo/myProfile'].userName
     this.myProfile.introduction = this.$store.getters['myPageInfo/myProfile'].introduction
     this.myProfile.iconURL = this.$store.getters['myPageInfo/myProfile'].iconURL
-    this.myProfile.twitterURL = this.$store.getters['myPageInfo/myProfile'].twitterURL
   },
   methods:{
-    back(){
-      this.$router.back();
+    goToMyPage(){
+      this.$router.push(`/myPage/${this.loginUserUid}`);
     },
     saveEditProfile(){
-      this.$store.dispatch('myPageInfo/editMyPage', this.myPageInfo)
-
-      alert('プロフィールを保存しました')
+      const result = confirm("この内容で保存してもよろしいですか？")
+      if(!result) return
+      this.$store.dispatch('userInfo/editMyProfile', this.myProfile)
       this.$router.push(`/myPage/${this.loginUserUid}`)
     }
   }

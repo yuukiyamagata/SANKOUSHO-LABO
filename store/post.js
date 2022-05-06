@@ -46,7 +46,6 @@ export const mutations = {
     state.noBook = true
   },
   logoutReset(state){
-    state.recommendationPosts = null;
     state.filteredRecommendationPosts = null;
     state.noBook = false;
   }

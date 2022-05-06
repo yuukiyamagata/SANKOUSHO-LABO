@@ -49,10 +49,9 @@
                   <v-list-item class="pl-0 mr-4 pt-3" router :to="`/mypage/${sankousho.post_user_uid}`">
                     <v-list-item-avatar color="grey darken-3">
                       <v-img
-                        :alt="`${sankousho.iconURL} avatar`"
+                          :alt="`${sankousho.iconURL} avatar`"
                           :src="sankousho.iconURL"
                           class="cursor elevation-6"
-                          @click="goToProfile"
                       ></v-img>
                     </v-list-item-avatar>
                   </v-list-item>
@@ -147,9 +146,6 @@ export default {
   methods:{
     pageChange( pageNumber ){
     this.displayLists = this.postRecommendations.slice(this.pageSize*( pageNumber  -1), this.pageSize*( pageNumber ));
-  },
-  goToProfile(){
-    console.log('go')
   },
   goToDetailPage(sankousho){
     this.$router.push(`/books/${sankousho.recommendation_book_id }`)
