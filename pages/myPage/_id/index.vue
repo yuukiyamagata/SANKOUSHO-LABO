@@ -20,7 +20,7 @@
             link-border-line-none
             d-block
             font-weight-medium"
-            to="@/introduction">
+            to="/introduction">
         使い方を見てみる
       </nuxt-link>
     </v-card-subtitle>

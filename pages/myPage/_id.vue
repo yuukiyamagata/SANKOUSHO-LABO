@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto mypage-width mt-12">
+  <div class="mx-auto myPage-width mt-12">
     <v-container class="px-12">
       <v-row>
         <v-col cols="9">
@@ -72,6 +72,7 @@
         ],
         image_src: require("@/static/TwitterLogo.png"),
         myPageUid: '',
+        visitorUid:'',
       }
     },
     computed:{
@@ -87,7 +88,7 @@
     },
     created(){
       this.myPageUid = this.$route.params.id
-      // プロフィール情報の取得
+      this.visitorUid = this.$store.getters["userInfo/user"]
       this.$store.dispatch("myPageInfo/getUserInfo", this.myPageUid)
     },
     methods:{
@@ -113,12 +114,8 @@
 
 <style>
 
-.mypage-width {
+.myPage-width {
   max-width: 900px;
-}
-
-.twitter-icon-color {
-  color: rgba(29,161,242);
 }
 
 

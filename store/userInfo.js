@@ -19,7 +19,6 @@ export const state = () => ({
     introduction : '',
     iconURL: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
     loginUserUid:'',
-    twitterURL: ''
   }
 })
 
