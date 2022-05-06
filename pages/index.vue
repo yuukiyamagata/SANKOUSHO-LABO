@@ -49,7 +49,7 @@
                   <v-list-item class="pl-0 mr-4 pt-3" router :to="`/mypage/${sankousho.post_user_uid}`">
                     <v-list-item-avatar color="grey darken-3">
                       <v-img
-                        :alt="`${sankousho.iconURL} avatar`"
+                          :alt="`${sankousho.iconURL} avatar`"
                           :src="sankousho.iconURL"
                           class="cursor elevation-6"
                       ></v-img>

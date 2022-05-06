@@ -7,7 +7,7 @@
             <v-row class="d-flex flex-column mb-6">
                 <v-col cols="11" class="ml-auto">
                   <v-responsive
-                  :aspectRation=16/9
+                  :aspect-ration=16/9
                   >
                     <v-img
                       :src="bookDetailInfo.recommendation_book_imageURL"
@@ -24,7 +24,7 @@
                 <v-divider class="mb-4"></v-divider>
                 <v-col class="text-center">
                     <v-menu
-                      openOnHover
+                      open-on-hover
                       top
                       offsetY
                     >

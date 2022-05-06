@@ -15,43 +15,6 @@ https://www.youtube.com/watch?v=LrhYbXOGLZo&t=212s&ab_channel=%E3%83%97%E3%83%AD
 Index画面のハートアイコン
 ログイン時に既にログイン済みならどうするか
 
-export const actions = {
-  async login( { commit }, payload) {
-    const auth = getAuth(this.$firebase)
-    await signInWithEmailAndPassword(auth, payload.email, payload.password)
-    .then( userCredential => {
-      // UserCredditanal に色々なデータが入っている
-      commit('setLoginState', true)
-      commit('setUserUid', userCredential.user.uid)
-      commit('setEmail', userCredential.user.email)
-      console.log('うまくいきました')
-      this.$router.push('/')
-    })
-    .catch(e => {
-      console.error(e)
-    })
-  },
-  async logout( { commit }){
-    const auth = getAuth(this.$firebase)
-    await signOut(auth)
-    .then(() => {
-      commit('setLoginState', false)
-      commit('setUserUid', '')
-      commit('setEmail', '')
-      this.$router.push('/auth/login')
-      console.log('ログアウト成功')
-    })
-    .catch(e => {
-      console.log(es)
-    })
-  },
-  // addUserInfo({ commit }, payload){
-  //   commit('setLoginUser', true)
-  //   commit('setUserUId', payload.uid)
-  //   commit('setEmial', payload.email)
-  // }
-}
-
 
 ~~~
 
@@ -127,40 +90,10 @@ fireabse deploy
 
 
 
-ユーザーのプロフィールを取得する
-ユーザーのプロフィール情報を取得するには、User のインスタンスのプロパティを使用します。次に例を示します
-~~~js
-const auth = getAuth();
-const user = auth.currentUser;
-if (user !== null) {
-  // The user object has basic properties such as display name, email, etc.
-  const displayName = user.displayName;
-  const email = user.email;
-  const photoURL = user.photoURL;
-  const emailVerified = user.emailVerified;
-
-  // The user's ID, unique to the Firebase project. Do NOT use
-  // this value to authenticate with your backend server, if
-  // you have one. Use User.getToken() instead.
-  const uid = user.uid;
-}
-~~~
 
 
 
 
-ログインによる分岐
-
-state login_user
-ログインユーザーが存在する時 v-if
-
-getters {
-  userName: : state => state.login_user ? state.login_user.dissplayName : ''
-  photoURL: state => state.login_user ? state.login_user.photoURL: '',
-  uid: state => state.logiin_user ? state.login_user.uid
-
-
-}
 
 ## authエラーハンドリング
   // エラー画面へ遷移
@@ -194,45 +127,57 @@ getters {
           dispatch('logout')
         }
         
-    }
-  },
-  // ログアウト処理
-  logout({ commit }) {
-    auth.signOut().then(function (result) {
-    })
-    commit('authCheckLogout')
-    commit('profile/logoutReset', null, { root: true })
-    commit('posts/logoutReset', null, { root: true })
-    commit('getPosts/logoutReset', null, { root: true })
-    commit('myPageProfile/logoutReset', null, { root: true })
-    this.$router.push('/')
-  },
-}
 
 
-  // Googleでログイン
-     async signInWithGoogle(){
-      try {
-          const auth = getAuth(this.$firebase)
-          const provider = new GoogleAuthProvider();
-          const result = await signInWithPopup(auth, provider)
-          const credential = GoogleAuthProvider.credentialFromResult(result);
-          const user = result.user
-          console.log('Credential ' + credential)
-          console.log('user ' + user)
-          console.log(auth.currentUser.photoURL)
-          console.log(auth.currentUser.displayName)
-          console.log('Googleのサインインが成功しました')
-      }catch(error){
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          // The email of the user's account used.
-          const email = error.email;
-          // The AuthCredential type that was used.
-          const credential = GoogleAuthProvider.credentialFromError(error);
-      }
-    }
-  }
-  // メールアでレスでログインc
+
+
+  <v-container fluid>
+        <v-row>
+          <v-col
+            v-for="book in myFavBooks"
+            :key="book.recommendation_book_id"
+            cols="8"
+            sm="6"
+            md="4"
+            class="sp-display"
+          >
+            <v-card
+              color="grey lighten-5"
+              maxWidth="300px"
+              >
+              <v-container fluid>
+                <v-row noGutters>
+                    <v-col cols="6" class="mx-auto">
+                      <v-responsive :aspectRatio="16/9">
+                        <v-img
+                          :src="book.recommendation_book_imageURL"
+                        >
+                        </v-img>
+                      </v-responsive>
+                    </v-col>
+                  <v-col cols="12">
+                    <v-card-title>
+                      {{ book.title }}
+                    </v-card-title>
+
+                    <v-divider class="mb-4"></v-divider>
+                  </v-col>
+
+                  <v-col cols="9">
+                      <nuxt-link
+                      :to="`/books/${sankousho.recommendation_book_id }`">
+                      詳細をみる
+                    </nuxt-link>
+                  </v-col>
+
+                </v-row>
+              </v-container>
+
+            </v-card>
+
+          </v-col>
+        </v-row>
+    </v-container>
+
 
 

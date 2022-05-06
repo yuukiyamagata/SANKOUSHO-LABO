@@ -1,5 +1,5 @@
 <template>
-<v-container class="grey lighten-4 mb-4">
+<v-container class="mb-4 grey lighten-4">
   <v-card
     class="mx-auto text-center"
     max-width="360"

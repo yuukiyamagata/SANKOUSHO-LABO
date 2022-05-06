@@ -54,7 +54,7 @@
             {{ tab.tabText }}
         </v-tab>
       </v-tabs>
-      <NuxtChild />
+      <NuxtChild class="mt-6" />
     </div>
   </div>
 </template>
@@ -67,8 +67,8 @@
       return {
         tabMenu:[
           {tabText: 'Home', link: 'home'},
-          {tabText: 'favorite', link: 'favorite'},
           {tabText: 'MyPost', link: 'myPost'},
+          {tabText: 'favorite', link: 'favorite'},
         ],
         image_src: require("@/static/TwitterLogo.png"),
         myPageUid: '',
@@ -91,7 +91,6 @@
       this.$store.dispatch("myPageInfo/getUserInfo", this.myPageUid)
     },
     methods:{
-      // タブメニューリファクタリング
       goToEditMypage(){
         this.$router.push(`/myPage/myPageEdit/${this.myPageUid}`)
       },
