@@ -96,7 +96,7 @@
                           absolute
                           right
                           small
-                          @click="confirm"
+                          @click="registerFavPost"
                           >
                             <v-icon dark size="20" >
                               mdi-plus
@@ -109,19 +109,77 @@
           </v-col>
         </v-row>
       </v-container>
+
+
+        <div class="text-center">
+          <v-dialog
+            v-model="dialog"
+            width="500"
+          >
+
+          <v-card class="mx-auto">
+            <v-card-title class="text-h5 indigo white--text font-weight-bold text-center">
+              新規登録・ログインのお願い
+            </v-card-title>
+
+            <v-card-text class="font-weight-bold pa-8">
+                お気に入りに登録するには、アカウントの新規登録、または、ログインが必要です。<br>
+                こちらからアカウントの登録及び、ログインをしてください。
+            </v-card-text>
+            <v-card-action class="px-8">
+              <v-row
+                  align="center"
+                  justify="center"
+                >
+                  <v-btn
+                    depressed
+                    color="primary"
+                    class="mr-4"
+                    @click="login"
+                  >
+                    ログイン
+                  </v-btn>
+                  <v-btn
+                    class="white--text"
+                    depressed
+                    color="teal"
+                    @click="register"
+                  >
+                    新規登録
+                  </v-btn>
+                </v-row>
+            </v-card-action>
+
+
+            <v-divider></v-divider>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="primary"
+                text
+                @click="dialog = false"
+              >
+                閉じる
+              </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
 
+  </div>
 </template>
 
 
 
 <script>
-import { collection, addDoc  } from "firebase/firestore"
-import { db, auth } from "@/plugins/firebase"
+// import { collection, addDoc  } from "firebase/firestore"
+// import { db, auth } from "@/plugins/firebase"
 export default {
   data(){
     return{
       bookId:'',
+      dialog: false,
       isRegistered: false,
     }
   },
@@ -131,30 +189,50 @@ export default {
     },
     loginUserInfo(){
       return this.$store.getters['userInfo/loginUserInfo']
+    },
+    userInfo(){
+      return this.$store.getters["userInfo/user"]
+    },
+    isLoggidIn(){
+      return this.$store.getters["auth/isLoggedIn"]
     }
   },
   created(){
     this.bookId = this.$route.params.bookId
-    console.log(this.loginUserInfo)
   },
   methods:{
-    async confirm(){
-      const result = window.confirm('お気に入りに登録しますか?')
-      if(!result) return // eslint-disable-line
-      const favoritePost ={
-        post_id:  this.bookDetailInfo.recommendation_book_id,
-        posted_book_title: this.bookDetailInfo. recommendation_book_title,
-        posted_book_imageURL: this.bookDetailInfo.recommendation_book_imageURL
-      }
-    // すでにお気に入りした記事かどうか調べる必要がある
-    const user = auth.currentUser
-    const favoritePostRef =  collection(db, 'users', user.uid, 'favorite_posts')
-    try {
-      await addDoc(favoritePostRef, favoritePost)
-      alert('お気に入りに登録しました')
-    }catch( e ){
-      console.log( e )
-    }
+    registerFavPost(){
+
+      if(!this.isLoggidIn){
+          this.dialog = true;
+          return;
+        }
+
+        alert("good");
+
+
+    //   const result = window.confirm('お気に入りに登録しますか?')
+    //   if(!result) return
+    //   const favoritePost ={
+    //     post_id:  this.bookDetailInfo.recommendation_book_id,
+    //     posted_book_title: this.bookDetailInfo.recommendation_book_title,
+    //     posted_book_imageURL: this.bookDetailInfo.recommendation_book_imageURL
+    //   }
+    // // すでにお気に入りした記事かどうか調べる必要がある
+    // const user = auth.currentUser
+    // const favoritePostRef =  collection(db, 'users', user.uid, 'favorite_posts')
+    // try {
+    //   await addDoc(favoritePostRef, favoritePost)
+    //   alert('お気に入りに登録しました')
+    // }catch(e){
+    //   console.log(e)
+    // }
+  },
+  login(){
+    this.$router.push('/auth/login');
+  },
+  register(){
+    this.$router.push('/auth/register');
   }
 }
 }
