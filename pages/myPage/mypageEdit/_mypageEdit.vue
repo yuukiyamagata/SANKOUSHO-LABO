@@ -89,9 +89,9 @@ export default {
       this.$router.push(`/myPage/${this.loginUserUid}`);
     },
     saveEditProfile(){
-      this.$store.dispatch('myPageInfo/editMyPage', this.myPageInfo)
-
-      alert('プロフィールを保存しました')
+      const result = confirm("この内容で保存してもよろしいですか？")
+      if(!result) return
+      this.$store.dispatch('userInfo/editMyProfile', this.myProfile)
       this.$router.push(`/myPage/${this.loginUserUid}`)
     }
   }

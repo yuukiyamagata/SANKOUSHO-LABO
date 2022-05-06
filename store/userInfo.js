@@ -1,12 +1,21 @@
 import {
+        collection,
         setDoc,
         doc,
         serverTimestamp,
-        getDoc
+        getDoc,
+        updateDoc,
+        writeBatch,
+        query,
+        where,
+        getDocs,
       }from 'firebase/firestore'
 import { db } from '@/plugins/firebase'
 
+// ログインユーザーと閲覧ユーザーの情報をこのモジュールで管理する。
+
 export const state = () => ({
+  // 閲覧ユーザー
   user: {
     userName: '',
     userUid: '',
@@ -40,32 +49,32 @@ export const mutations = {
     state.loginUserInfo.iconURL = userData.iconURL
     state.loginUserInfo.loginUserUid = userData.uid
   },
-  logoutReset( state ){
+  editMyProfile(state, myPageInfo){
+    state.loginUserInfo.userName = myPageInfo.userName
+    state.loginUserInfo.iconURL = myPageInfo.iconURL
+    state.loginUserInfo.introduction = myPageInfo.introduction
+  },
+  logoutReset(state){
     state.user = {
       userUid: '',
       userName: '',
       iconURL: '',
       emailVerified: ''
     }
-      state.loginUserInfo = {
-        userName: '',
-        loginUserUid:'',
-        iconURL: "https://example.com/jane-q-user/profile.jpg",
-      }
-  }
+    state.loginUserInfo = {
+      userName: '',
+      loginUserUid:'',
+      iconURL: "https://example.com/jane-q-user/profile.jpg",
+    }
+  },
 }
 
 export const actions = {
-  // authのユーザー情報をstateに格納する。
   setUserInfo({ commit }, userInfo) {
     commit('setUserInfo', userInfo)
   },
-  // user.userUidはAuthIdとする
   async createUser({ getters, dispatch }, isNewUser) {
     const userUid = getters.user.userUid
-    console.log(userUid)
-    console.log(getters.user)
-
     try {
 
       if (isNewUser) {
@@ -79,27 +88,54 @@ export const actions = {
           created_at: serverTimestamp()
           })
           dispatch('fetchUserInfo')
-        }else{
-          dispatch('fetchUserInfo')
-          }
 
-    }catch(error){
-        console.error( error.message ) // eslint-disable-line
-        throw new Error("ログインに失敗しました")
+        }else {
+          dispatch('fetchUserInfo')
+        }
+
+      }catch(error){
+        alert("ログインに失敗しました");
       }
     },
     async fetchUserInfo({ getters, commit }) {
       const userUid = getters.user.userUid
       try {
-        const docRef = doc(db, 'users', userUid)
-        const docSnap = await getDoc(docRef)
-        console.log(docSnap.data())
-        commit('fetchUserInfo', docSnap.data())
+          const docRef = doc(db, 'users', userUid)
+          const docSnap = await getDoc(docRef)
+          console.log(docSnap.data())
+          commit('fetchUserInfo', docSnap.data())
       } catch(error) {
           console.log(error)
       }
     },
+    async editMyProfile({ dispatch, getters, commit }, myProfile){
+      const uid = getters.loginUserInfo.loginUserUid;
+      const userRef = doc(db, "users", uid);
+      try {
 
+        await updateDoc(userRef, {
+          iconURL: myProfile.iconURL,
+          introduction: myProfile.introduction,
+          userName: myProfile.userName,
+        })
+        const batch = writeBatch(db);
+        const postsRef = collection(db, "post_recommendations")
+        const postQuery = query(postsRef, where("post_user_uid", "==", uid))
+        const querySnapShot = await getDocs(postQuery)
+        querySnapShot.forEach(doc => {
+          batch.update(doc.ref, {
+            post_user_name: myProfile.userName,
+            iconURL: myProfile.iconURL,
+          })
+        })
+        await batch.commit();
+        commit('editMyProfile', myProfile)
+        dispatch('myPageInfo/editMyPageProfile', myProfile, { root: true})
+        alert('プロフィールを更新しました')
+      }catch(error){
+        alert("マイページの更新に失敗しました")
+      }
+    },
     logoutReset({ commit }) {
       commit('logoutReset')
     },

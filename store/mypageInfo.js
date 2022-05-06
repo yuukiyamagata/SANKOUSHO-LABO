@@ -28,6 +28,14 @@ export const mutations = {
   addMyPosts(){
     console.log("aaa")
   },
+  editMyPageProfile(state, myPageInfo){
+    state.myProfile.userName = myPageInfo.userName;
+    state.myProfile.iconURL = myPageInfo.iconURL;
+    state.myProfile.introduction = myPageInfo.introduction
+  },
+  initMyPosts(state){
+    state.myPosts = [];
+  },
   logoutReset(state){
     state.myProfile.userName = '';
     state.myProfile.introduction = '';
@@ -48,12 +56,15 @@ export const actions = {
       console.error( error )
     }
   },
-  async editMyPage( { commit }, myPageInfo){
-
+  editMyPageProfile( { commit }, myPageInfo){
+    commit("editMyPageProfile", myPageInfo)
+  },
+  initMyPosts({commit }){
+    commit("initMyPosts")
   },
   logoutReset({ commit }){
     commit('logoutReset')
-  }
+  },
 }
 
 

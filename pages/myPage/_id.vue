@@ -14,7 +14,6 @@
                     </v-avatar>
                     <div class="ml-4">
                       <p class="pt-2 text-h5" v-text="userName"></p>
-                      <p>About me</p>
                       <!-- <v-img :src="image_src" class="twitter-icon-color" height="30px" width="30px"/> -->
                     </div>
                   </v-col>
@@ -23,12 +22,11 @@
               </v-col>
               <v-col cols="12">
                 <v-card elevation="0">
-                  <v-card-text v-text="introduction">
+                  <v-card-title>About me</v-card-title>
+                  <v-card-text class="font-weight-bold pa-2" v-text="introduction">
                   </v-card-text>
                 </v-card>
               </v-col>
-
-
 
             </v-row>
 
@@ -37,7 +35,7 @@
           <v-btn
             outlined
             elevation="0"
-            @click="goToEditMypage"
+            @click="goToEditMyPage"
             >編集</v-btn>
         </v-col>
       </v-row>
@@ -90,9 +88,10 @@
       this.myPageUid = this.$route.params.id
       this.visitorUid = this.$store.getters["userInfo/user"]
       this.$store.dispatch("myPageInfo/getUserInfo", this.myPageUid)
+      this.$store.dispatch("myPageInfo/initMyPosts")
     },
     methods:{
-      goToEditMypage(){
+      goToEditMyPage(){
         this.$router.push(`/myPage/myPageEdit/${this.myPageUid}`)
       },
       changeTabMenu(link){
