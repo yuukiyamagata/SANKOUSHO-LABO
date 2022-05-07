@@ -180,7 +180,7 @@
 
 
 <script>
-import { collection, addDoc  } from "firebase/firestore"
+import { collection, serverTimestamp, setDoc, doc  } from "firebase/firestore"
 import {  db } from "@/plugins/firebase"
 export default {
   data(){
@@ -216,18 +216,27 @@ export default {
   async registerFavPost(){
       const result = window.confirm('お気に入りに登録しますか?')
       if(!result) return
-      const favoritePost ={
+      const favoritePost = {
         post_id:  this.bookDetailInfo.recommendation_book_id,
         posted_book_title: this.bookDetailInfo.recommendation_book_title,
         posted_book_imageURL: this.bookDetailInfo.recommendation_book_imageURL
       }
-      const favoritePostRef =  collection(db, 'users', this.loginUserUid, 'favorite_posts')
+      const favoriteUser = {
+        user_uid: this.loginUserUid,
+        created_at: serverTimestamp(),
+      }
+      const favoritePostRef =  collection(db, "users", this.loginUserUid, "favorite_posts")
+      const postCollectionRef = collection(db, "post_recommendations", this.bookId, "favorite_users")
+      const favPostDocRef = doc(favoritePostRef, this.bookDetailInfo.recommendation_book_id)
+      const favUserDocRef = doc(postCollectionRef, this.bookDetailInfo.post_user_uid)
       try {
-        await addDoc(favoritePostRef, favoritePost)
-        alert('お気に入りに登録しました')
+        await setDoc(favPostDocRef, favoritePost)
+        this.$store.commit('myPage/pushFavPostsRef', favoritePost)
+        await setDoc(favUserDocRef, favoriteUser)
       }catch(e){
         console.log(e)
       }
+      alert('お気に入りに登録しました')
   },
   goToLogin(){
     this.$router.push('/auth/login');

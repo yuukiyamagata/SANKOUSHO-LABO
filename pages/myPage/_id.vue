@@ -67,27 +67,28 @@
           {tabText: 'MyPost', link: 'myPost'},
           {tabText: 'favorite', link: 'favorite'},
         ],
-        image_src: require("@/static/TwitterLogo.png"),
+        image_src: require('@/static/TwitterLogo.png'),
         myPageUid: '',
         visitorUid:'',
       }
     },
     computed:{
       userName(){
-        return this.$store.getters["myPage/myProfile"].userName
+        return this.$store.getters['myPage/myProfile'].userName
       },
       introduction(){
-        return this.$store.getters["myPage/myProfile"].introduction
+        return this.$store.getters['myPage/myProfile'].introduction
       },
       iconURL(){
-        return this.$store.getters["myPage/myProfile"].iconURL
+        return this.$store.getters['myPage/myProfile'].iconURL
       }
     },
     created(){
       this.myPageUid = this.$route.params.id
-      this.visitorUid = this.$store.getters["userInfo/user"].userUid
-      this.$store.dispatch("myPage/getUserInfo", this.myPageUid)
-      this.$store.dispatch("myPage/initMyPosts")
+      this.visitorUid = this.$store.getters['userInfo/user'].userUid
+      this.$store.dispatch('myPage/getUserInfo', this.myPageUid)
+      this.$store.dispatch('myPage/initMyPosts')
+      this.$store.dispatch('myPage/fetchMyPosts', this.myPageUid)
     },
     methods:{
       goToEditMyPage(){

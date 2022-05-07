@@ -1,5 +1,5 @@
 
-import { doc, collection, getDoc } from 'firebase/firestore'
+import { doc, collection, getDoc, getDocs, where, orderBy, query } from 'firebase/firestore'
 import { db } from '@/plugins/firebase.js'
 
 
@@ -32,6 +32,13 @@ export const mutations = {
     state.myProfile.introduction = myProfile.introduction;
     state.myProfile.iconURL = myProfile.iconURL;
     state.myProfile.myPageUid = myProfile.uid;
+  },
+  pushMyPosts(state, myPosts){
+    state.myPosts.push({
+      postId: myPosts.recommendation_book_id,
+      postTitle: myPosts.recommendation_book_title,
+      postImageURL: myPosts.recommendation_book_imageURL,
+    })
   },
   pushFavPostsRef(state, favPosts){
     state.myFavoritePosts.push({
@@ -72,10 +79,22 @@ export const actions = {
       console.error( error )
     }
   },
+  async fetchMyPosts({ commit }, uid){
+      const postRef = collection(db, "post_recommendations");
+      const postQuery = query(postRef, where("post_user_uid", "==", uid), orderBy("created_at", "desc"))
+      try{
+          const querySnapshot = await getDocs(postQuery)
+          querySnapshot.forEach(doc  => {
+            commit('pushMyPosts', doc.data())
+          })
+      }catch(e){
+          console.error(e)
+      }
+  },
   async fetchMyFavoritePosts( { commit }, uid){
     try{
       const favPostsRef = collection(db, "users", uid, "favorite_posts")
-      const snapShots = await getDoc(favPostsRef)
+      const snapShots = await getDocs(favPostsRef)
       if(!snapShots){
         return
       }else{
@@ -84,9 +103,8 @@ export const actions = {
         })
       }
     }catch(e){
-      console.log(e)
+      console.error(e)
     }
-
   },
   editMyPageProfile( { commit }, myPageInfo){
     commit('editMyPageProfile', myPageInfo)

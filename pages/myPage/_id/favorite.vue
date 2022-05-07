@@ -47,11 +47,10 @@
               <v-list-item-action>
 
                   <v-menu
-                      open-on-hover
                       top
                     >
                   <template #activator="{ on, attrs }">
-                      <v-icon color="grey lighten-1" v-bind="attrs" size="30" v-on="on">
+                      <v-icon color="black lighten-1" v-bind="attrs" size="30" v-on="on">
                         mdi-dots-vertical
                       </v-icon>
                   </template>
