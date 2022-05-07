@@ -23,19 +23,18 @@
             >
             <v-img
               :src="`https://picsum.photos/200/300?image=${getImage()}`"
-              height="250px"
+              max-width="200"
+              height="300px"
+              class="cursor mx-auto"
             >
-              <v-btn
-                class="ml-2 mt-4 d-inline-block"
-                fab
-                small
-                color="yellow"
-                dark
-              >
-              <v-icon color="white">
-                mdi-star
-              </v-icon>
-            </v-btn>
+            <v-icon
+              class="ml-2"
+              x-large
+              left
+              color="yellow"
+            >
+              mdi-star
+            </v-icon>
           </v-img>
 
             <v-list-item>
@@ -47,12 +46,15 @@
               <v-list-item-action>
 
                   <v-menu
-                      open-on-hover
                       top
                     >
                   <template #activator="{ on, attrs }">
-                      <v-icon color="grey lighten-1" v-bind="attrs" size="30" v-on="on">
-                        mdi-dots-vertical
+                      <v-icon
+                        color="black lighten-1"
+                        v-bind="attrs"
+                        size="20"
+                        v-on="on">
+                          mdi-dots-vertical
                       </v-icon>
                   </template>
 

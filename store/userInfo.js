@@ -12,10 +12,7 @@ import {
       }from 'firebase/firestore'
 import { db } from '@/plugins/firebase'
 
-// ログインユーザーと閲覧ユーザーの情報をこのモジュールで管理する。
-
 export const state = () => ({
-  // 閲覧ユーザー
   user: {
     userName: '',
     userUid: '',
@@ -46,6 +43,7 @@ export const mutations = {
   },
   fetchUserInfo(state, userData){
     state.loginUserInfo.userName = userData.userName
+    state.loginUserInfo.introduction = userData.introduction
     state.loginUserInfo.iconURL = userData.iconURL
     state.loginUserInfo.loginUserUid = userData.uid
   },
@@ -97,7 +95,7 @@ export const actions = {
         alert("ログインに失敗しました");
       }
     },
-    async fetchUserInfo({ getters, commit }) {
+    async fetchUserInfo({ getters, commit, dispatch }) {
       const userUid = getters.user.userUid
       try {
           const docRef = doc(db, 'users', userUid)
@@ -130,7 +128,7 @@ export const actions = {
         })
         await batch.commit();
         commit('editMyProfile', myProfile)
-        dispatch('myPageInfo/editMyPageProfile', myProfile, { root: true})
+        dispatch('myPage/editMyPageProfile', myProfile, { root: true})
         alert('プロフィールを更新しました')
       }catch(error){
         alert("マイページの更新に失敗しました")

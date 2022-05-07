@@ -14,7 +14,6 @@
                     </v-avatar>
                     <div class="ml-4">
                       <p class="pt-2 text-h5" v-text="userName"></p>
-                      <!-- <v-img :src="image_src" class="twitter-icon-color" height="30px" width="30px"/> -->
                     </div>
                   </v-col>
 
@@ -33,6 +32,7 @@
         </v-col>
         <v-col cols="2">
           <v-btn
+            v-if="isLoggedIn && isMySelf"
             outlined
             elevation="0"
             @click="goToEditMyPage"
@@ -45,6 +45,12 @@
       <v-divider></v-divider>
         <v-tabs>
         <v-tab
+          v-if="isLoggedIn && isMySelf"
+          @click="goToMyHome"
+        >
+          Home
+        </v-tab>
+        <v-tab
           v-for="tab in tabMenu"
           :key="tab.tabText"
           @click="changeTabMenu(tab.link)"
@@ -52,7 +58,12 @@
             {{ tab.tabText }}
         </v-tab>
       </v-tabs>
-      <NuxtChild class="mt-6" />
+      <NuxtChild
+        class="mt-6"
+        :isLoggedIn="isLoggedIn"
+        :myPageUid="myPageUid"
+        :isMySelf="isMySelf"
+        />
     </div>
   </div>
 </template>
@@ -64,49 +75,57 @@
     data(){
       return {
         tabMenu:[
-          {tabText: 'Home', link: 'home'},
           {tabText: 'MyPost', link: 'myPost'},
           {tabText: 'favorite', link: 'favorite'},
         ],
-        image_src: require("@/static/TwitterLogo.png"),
+        image_src: require('@/static/TwitterLogo.png'),
         myPageUid: '',
         visitorUid:'',
+        isMySelf: false,
       }
     },
     computed:{
       userName(){
-        return this.$store.getters["myPageInfo/myProfile"].userName
+        return this.$store.getters['myPage/myProfile'].userName
       },
       introduction(){
-        return this.$store.getters["myPageInfo/myProfile"].introduction
+        return this.$store.getters['myPage/myProfile'].introduction
       },
       iconURL(){
-        return this.$store.getters["myPageInfo/myProfile"].iconURL
-      }
+        return this.$store.getters['myPage/myProfile'].iconURL
+      },
+      isLoggedIn(){
+        return this.$store.getters['auth/isLoggedIn']
+      },
     },
     created(){
       this.myPageUid = this.$route.params.id
-      this.visitorUid = this.$store.getters["userInfo/user"]
-      this.$store.dispatch("myPageInfo/getUserInfo", this.myPageUid)
-      this.$store.dispatch("myPageInfo/initMyPosts")
+      this.visitorUid = this.$store.getters['userInfo/user'].userUid
+      this.$store.dispatch('myPage/getUserInfo', this.myPageUid)
+      this.$store.dispatch('myPage/initMyPosts')
+      this.$store.dispatch('myPage/fetchMyPosts', this.myPageUid)
+      // お気に入りの取得とリセットの処理
+      if(this.myPageUid === this.visitorUid){
+        this.isMySelf = true;
+      }else{
+        this.isMySelf = false;
+      }
+
     },
     methods:{
       goToEditMyPage(){
         this.$router.push(`/myPage/myPageEdit/${this.myPageUid}`)
       },
+      goToMyHome(){
+        this.$router.push(`/myPage/${this.myPageUid}`)
+      },
       changeTabMenu(link){
-        switch(link){
-          case 'home':
-            this.$router.push(`/myPage/${this.myPageUid}`);
-            break;
-          case 'myPost':
-            this.$router.push(`/myPage/${this.myPageUid}/myPost`);
-            break;
-          case 'favorite':
+        if(link === 'myPost'){
+          this.$router.push(`/myPage/${this.myPageUid}/myPost`);
+        }else{
             this.$router.push(`/myPage/${this.myPageUid}/favorite`);
-            break;
-        }
-      }
+          }
+      },
     }
   }
 </script>

@@ -1,5 +1,5 @@
 <template>
-<v-container class="mb-4 grey lighten-4">
+<v-container v-if="isLoggedIn && isMySelf" class="mb-4 grey lighten-4">
   <v-card
     class="mx-auto text-center"
     max-width="360"
@@ -45,14 +45,19 @@
 
 <script>
   export default {
-    data(){
-      return {
-
+    props:{
+      isLoggedIn:{
+        type: Boolean,
+        require: true,
+      },
+      isMySelf:{
+        type: Boolean,
+        require: true,
       }
     },
     methods:{
       createPost(){
-
+        this.$router.push('/posts/create')
       }
     }
   }

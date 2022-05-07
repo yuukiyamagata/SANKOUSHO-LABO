@@ -42,7 +42,7 @@ export const actions = {
           photoURL: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
         })
         .then(() => {
-          dispatch('userInfo/setUserInfo', userCredential.user, { root: true })
+            dispatch('userInfo/setUserInfo', userCredential.user, { root: true })
             // ユーザーデータをUsersコレクションに格納する。
             dispatch('userInfo/createUser', isNewUser, { root: true })
           })
@@ -89,6 +89,7 @@ export const actions = {
               alert('メールアドレスが間違っています。')
             } else {
               alert('ログインできません。')
+              dispatch('logout')
             }
           })
       },
@@ -98,12 +99,10 @@ export const actions = {
           commit('setLoginState', false)
           commit('userInfo/logoutReset', null, { root: true })
           commit('post/logoutReset', null, { root: true })
-          commit('myPageInfo/logoutReset', null, { root: true })
-          // commit('getPosts/logoutReset', null, { root: true })
-          this.$router.push('/')
+          commit('myPage/logoutReset', null, { root: true })
         })
         .catch(e => {
-          console.log(e) // eslint-disable-line
+          console.log(e)
         })
           alert('ログアウトしました')
           this.$router.push('/')

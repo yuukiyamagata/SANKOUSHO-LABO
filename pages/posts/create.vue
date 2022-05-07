@@ -242,21 +242,20 @@ export default {
           }catch( error ){
             alert(error);
           }
-    },
-    selectBook( item ){
-      this.sankousho.title = item.title
-      this.sankousho.author = item.author
-      this.sankousho.imageUrl = item.imageUrl ? item.imageUrl : this.image_src_noImage // eslint-disable-line
-      this.image_src_noImage = this.sankousho.imageUrl
-      this.sankousho.itemUrl = item.itemUrl
-
-      this.dialog = false
-      this.searchResults = [];
-    },
-    closeDialog(){
-      this.dialog = false
-      this.searchResults = []
-    },
+      },
+      selectBook( item ){
+        this.sankousho.title = item.title
+        this.sankousho.author = item.author
+        this.sankousho.imageUrl = item.imageUrl ? item.imageUrl : this.image_src_noImage // eslint-disable-line
+        this.image_src_noImage = this.sankousho.imageUrl
+        this.sankousho.itemUrl = item.itemUrl
+        this.dialog = false
+        this.searchResults = [];
+      },
+      closeDialog(){
+        this.dialog = false
+        this.searchResults = []
+      },
     async postBook(){
       const message = 'この内容で投稿してもよろしいでしょうか?'
       const result = window.confirm(message);
