@@ -21,52 +21,51 @@
         prependIcon="mdi-lock"
         :appendIcon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
         label="パスワード"
-        @click:append="showPassword = !showPassword" />
-      <v-card-actions>
-        <v-btn block class="primary" @click="login">ログイン</v-btn>
+        @click:append="showPassword = !showPassword"/>
+      <v-card-actions class="pa-0 d-flex flex-column text-center">
+        <v-btn
+          large
+          elevation="1"
+          class="mb-4 text-transform-none auth-button-width"
+          @click="login"
+        >
+          ログイン
+        </v-btn>
+        <v-btn
+          large
+          color="primary"
+          elevation="0"
+          class="mb-4 auth-button-width"
+        >
+          匿名ユーザーでログインする
+        </v-btn>
       </v-card-actions>
-      <nuxt-link to="/auth/forgetPassword" class="d-block">パスワードお忘れの方はこちら</nuxt-link>
+      <nuxt-link to="/auth/ResetPassword" class="d-block link">パスワードお忘れの方はこちら</nuxt-link>
     </v-form>
     </v-card-text>
 
     <v-divider></v-divider>
 
-<v-form class="mt-3">
-    <v-btn
-      rounded
-      class="my-6 twitter-icon-color"
-      color="white white--light"
-      style="text-transform: none; width: 85%;"
+  <v-form class="my-4">
+      <v-btn
+        rounded
+        class="mb-6"
+        color="white"
+        style="text-transform: none; width: 85%;"
+        @click="loginWithGoogle"
       >
-    <span>
+      <span>
         <v-img
-          height="20px"
-          width="20px"
-          :src="image_src_twitter"
-          class="mr-4"
+        height="20px"
+        width="20px"
+        :src="image_src_google"
+        class="mr-4"
         />
-    </span>
-    Twitterアカウントでログイン
-    </v-btn>
-    <v-btn
-      rounded
-      class="mb-6"
-      color="white"
-      style="text-transform: none; width: 85%;"
-      @click="loginWithGoogle"
-    >
-    <span>
-      <v-img
-      height="20px"
-      width="20px"
-      :src="image_src_google"
-      class="mr-4"
-      />
-    </span>
-    Googleアカウントでログイン
-    </v-btn>
+      </span>
+      Googleアカウントでログイン
+      </v-btn>
   </v-form>
-  </v-card>
+</v-card>
 
   </div>
 </template>
@@ -79,14 +78,12 @@ export default {
   components:{
     Loading,
   },
-  layout: 'empty',
     data(){
     return {
       showPassword: false,
       email: '',
       password: '',
       image_src_google: require('@/static/GoogleLogo.png'),
-      image_src_twitter: require('@/static/TwitterLogo.png'),
       isLoading: false,
     }
   },

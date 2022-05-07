@@ -1,52 +1,21 @@
-
-
 ## やること
 Index画面のハートアイコン
-ログイン時に既にログイン済みならどうするか
 
 
-~~~
+## authエラーハンドリング
+  // エラー画面へ遷移
+  actionに書く dispathで呼ぶ
+  errorEmail({ commit }) {
+    this.$router.push('errorEmail')
+  },
 
-export default function({
-  $firebase, store, state, redirect
-})
-{
-  const isAuthenticated = store.getters['auth/getLoggedIn']
-  string.match(/文字列/)の文字列を含むかのチェック
-  if(!isAuthenticated && !route.path.match(/\auth\/)){
-    // \（バックスラッシュ）で逃している
-    redirect('/auth/login')
-  }
-
-}
+    //パスワード変更メールを送信
+  changePassword({ commit }, email) {
+    auth.sendPasswordResetEmail(email)
+  },
 
 
-   middleware/authenticatd.js
-
-   // import { getAuth, onAuthStateChanged} from 'firebase/auth'
-
-// export default function({
-//   $firebase,
-//   store,
-//   route,
-//   redirect,
-
-// })
-// {
-//   const auth = getAuth($firebase)
-//   if(!store.getters['auth/getLoggedIn']){
-//     onAuthStateChanged(auth, user => {
-//       if(user){
-//         store.dispatch('auth/addUserInfo', user)
-//       }else if (!route.path.match(/\/auth\//)){
-//         redirect('/auth/login')
-//       }
-//     })
-//   }
-
-// }
-
-Hosting
+## Hosting
 
 configあり
 Use an existing project
@@ -71,95 +40,43 @@ npm run generate
 fireabse deploy
 
 
+~~~js
+middleware/authenticatd.js
+
+import { getAuth, onAuthStateChanged} from 'firebase/auth'
+
+export default function({
+  $firebase,
+  store,
+  route,
+  redirect,
+
+})
+{
+  const auth = getAuth($firebase)
+  if(!store.getters['auth/getLoggedIn']){
+    onAuthStateChanged(auth, user => {
+      if(user){
+        store.dispatch('auth/addUserInfo', user)
+      }else if (!route.path.match(/\/auth\//)){
+            // string.match(/文字列/)の文字列を含むかのチェック
+            // \（バックスラッシュ）で逃している
+        redirect('/auth/login')
+      }
+    })
+  }
+
+}
+~~~
 
 
 
 
 
 
-## authエラーハンドリング
-  // エラー画面へ遷移
-  actionに書く dispathで呼ぶ
-  errorEmail({ commit }) {
-    this.$router.push('errorEmail')
-  },
-
-    //パスワード変更メールを送信
-  changePassword({ commit }, email) {
-    auth.sendPasswordResetEmail(email)
-  },
 
 
 
-
-   async signIn({ dispatch, commit }, { email, password }) {
-    this.$router.push('signInLoading')
-    try {
-        const result = await auth.signInWithEmailAndPassword(email, password)
-        // dispatch('profile/setUser', result.user, { root: true })
-        dispatch('profile/getUser', null, { root: true })
-
-    } catch (error) {
-        if (error.code == "auth/wrong-password") {
-          alert('パスワードが間違っています。')
-        } else if (error.code == "auth/user-not-found") {
-          alert('メールアドレスが間違っています。')
-        } else {
-          alert('ログインできません。')
-          dispatch('logout')
-        }
-        
-
-
-
-
-  <v-container fluid>
-        <v-row>
-          <v-col
-            v-for="book in myFavBooks"
-            :key="book.recommendation_book_id"
-            cols="8"
-            sm="6"
-            md="4"
-            class="sp-display"
-          >
-            <v-card
-              color="grey lighten-5"
-              maxWidth="300px"
-              >
-              <v-container fluid>
-                <v-row noGutters>
-                    <v-col cols="6" class="mx-auto">
-                      <v-responsive :aspectRatio="16/9">
-                        <v-img
-                          :src="book.recommendation_book_imageURL"
-                        >
-                        </v-img>
-                      </v-responsive>
-                    </v-col>
-                  <v-col cols="12">
-                    <v-card-title>
-                      {{ book.title }}
-                    </v-card-title>
-
-                    <v-divider class="mb-4"></v-divider>
-                  </v-col>
-
-                  <v-col cols="9">
-                      <nuxt-link
-                      :to="`/books/${sankousho.recommendation_book_id }`">
-                      詳細をみる
-                    </nuxt-link>
-                  </v-col>
-
-                </v-row>
-              </v-container>
-
-            </v-card>
-
-          </v-col>
-        </v-row>
-    </v-container>
 
 
 

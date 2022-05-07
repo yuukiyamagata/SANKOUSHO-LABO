@@ -1,5 +1,5 @@
 <template>
-  <div id="home" class="bg-main p-8">
+  <div :class="['pb-8', {'bg-main': !noBook}]">
     <v-card
       tile
     >
@@ -16,9 +16,9 @@
       </v-tabs>
     </v-card>
 
-    <v-container fluid>
+    <v-container v-if="!noBook" fluid>
       <h3 class="headline font-weight-medium my-8">Recommended Post</h3>
-      <v-row v-if="!noBook">
+      <v-row>
         <v-col
           v-for="sankousho in postRecommendations"
           :key="sankousho.recommendation_book_id"
@@ -75,10 +75,6 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="noBook">
-        Sorry....。Not Register this category
-      </v-row>
-
 
 
       <!-- <v-row v-if="displayLists.length < 12" class="mb-10" >
@@ -92,7 +88,17 @@
         </v-col>
       </v-row> -->
     </v-container>
+
+    <div v-if="noBook">
+      <div class="message__wrapper">
+        <div class="message__text">
+          <p>フィルター検索の結果は「０件」でした。</p>
+        </div>
+      </div>
+    </div>
   </div>
+
+
 </template>
 
 
@@ -170,6 +176,15 @@ export default {
 }
 .book-title  {
   overflow: hidden;
+}
+.message__wrapper {
+  width: 80%;
+  height: 100%;
+  margin: 0 auto;
+  & .message__text {
+    text-align: center;
+
+  }
 }
 </style>
 

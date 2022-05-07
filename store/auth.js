@@ -41,22 +41,19 @@ export const actions = {
           displayName: userName,
           photoURL: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
         })
-        .then(() => {
-            dispatch('userInfo/setUserInfo', userCredential.user, { root: true })
-            // ユーザーデータをUsersコレクションに格納する。
-            dispatch('userInfo/createUser', isNewUser, { root: true })
-          })
-          .catch(e => console.log(e) ) // eslint-disable-line
+        .then(() => { dispatch('userInfo/createUser', isNewUser, { root: true }) })
+        .catch(e => console.log(e) ) // eslint-disable-line
 
-          }catch(error){
-            console.log({ 'code': error.code, 'message': error.message }) // eslint-disable-line
-            if (error.code === "auth/email-already-in-use") {
-              // dispatch('errorEmail')
-              alert('既にメールアドレスが使用されています')
-            }else {
-              alert('新規登録に失敗しました。')
-            }
+        }catch(error){
+          console.log({ 'code': error.code, 'message': error.message }) // eslint-disable-line
+          if (error.code === "auth/email-already-in-use") {
+            // dispatch('errorEmail')
+            alert('既にメールアドレスが使用されています')
+          }else {
+            alert('新規登録に失敗しました。')
+            dispatch('logout')
           }
+        }
       },
 
       async signInWithGoogle({ dispatch }){
