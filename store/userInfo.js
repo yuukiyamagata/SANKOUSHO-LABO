@@ -12,10 +12,7 @@ import {
       }from 'firebase/firestore'
 import { db } from '@/plugins/firebase'
 
-// ログインユーザーと閲覧ユーザーの情報をこのモジュールで管理する。
-
 export const state = () => ({
-  // 閲覧ユーザー
   user: {
     userName: '',
     userUid: '',

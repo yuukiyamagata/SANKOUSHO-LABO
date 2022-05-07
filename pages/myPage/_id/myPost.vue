@@ -2,13 +2,14 @@
   <v-card
     flat
     tile
+    class="mx-auto"
   >
     <v-card-title class="pl-2 pt-3 h-3 font-weight-bold">
       My Recommendation Posts
     </v-card-title>
     <v-container fluid>
 
-      <v-row>
+      <v-row class="mx-auto">
         <v-col
           v-for="myPost in myPosts"
           :key="myPost.postId"
@@ -18,11 +19,14 @@
           md="4"
         >
           <v-card
-              max-width="350"
+              max-width="300"
             >
             <v-img
-              height="300px"
+              class="cursor mx-auto"
+              height="300"
+              max-width="200"
               :src="myPost.postImageURL"
+              @click="watchDetail(myPost.postId)"
             >
           </v-img>
 
@@ -34,26 +38,24 @@
                 </v-list-item-title>
               </v-list-item-content>
 
-              <v-list-item-action>
-
+              <v-list-item-action v-if="isLoggedIn && isMySelf">
                   <v-menu top>
-                  <template #activator="{ on, attrs }">
-                      <v-icon color="black lighten-1" v-bind="attrs" size="20" v-on="on">
-                        mdi-dots-vertical
-                      </v-icon>
-                  </template>
-
+                    <template #activator="{ on, attrs }">
+                        <v-icon color="black lighten-1" v-bind="attrs" size="20" v-on="on">
+                          mdi-dots-vertical
+                        </v-icon>
+                    </template>
                   <v-list>
                     <v-list-item v-for="list in listItems" :key="list.listTitle" class="cursor">
                       <v-list-item-title @click="selectListAction(list.action, myPost.postId)">
                         {{ list.listTitle }}
                       </v-list-item-title>
                     </v-list-item>
-                    </v-list>
-                  </v-menu>
+                  </v-list>
+                </v-menu>
               </v-list-item-action>
-            </v-list-item>
 
+            </v-list-item>
 
           </v-card>
         </v-col>
@@ -65,6 +67,16 @@
 
 <script>
   export default {
+    props:{
+      isMySelf:{
+        type: Boolean,
+        required: true,
+      },
+      isLoggedIn:{
+        type: Boolean,
+        required: true,
+      }
+    },
     data: () => ({
       listItems:[
         {listTitle: '投稿を削除する', action: 'deletePost'},
@@ -80,8 +92,15 @@
     created(){
     },
     methods: {
+      deletePost(id){
+        console.log(id)
+      },
+      watchDetail(id){
+        this.$router.push(`/books/${id}`)
+      },
+      editMyPost(id){
+      },
       selectListAction(actionName, id){
-
         let executeFunc;
         switch(actionName){
           case  "deletePost":
@@ -94,17 +113,7 @@
             executeFunc = this.editMyPost;
             break;
         }
-
         executeFunc(id)
-      },
-      deletePost(id){
-        console.log(id)
-      },
-      watchDetail(id){
-
-      },
-      editMyPost(id){
-
       },
     },
   }

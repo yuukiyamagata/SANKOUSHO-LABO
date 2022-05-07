@@ -46,12 +46,13 @@
 
               <v-row no-gutters>
                 <v-col cols="2">
-                  <v-list-item class="pl-0 mr-4 pt-3" router :to="`/mypage/${sankousho.post_user_uid}`">
+                  <v-list-item class="pl-0 mr-4 pt-3">
                     <v-list-item-avatar color="grey darken-3">
                       <v-img
                           :alt="`${sankousho.iconURL} avatar`"
                           :src="sankousho.iconURL"
                           class="cursor elevation-6"
+                          @click="goToProfile(sankousho.post_user_uid)"
                       ></v-img>
                     </v-list-item-avatar>
                   </v-list-item>
@@ -62,7 +63,7 @@
                   </v-card-title>
 
                   <v-card-subtitle class="pl-2 pb-8 body-2">
-                    {{ sankousho.recommendation_book_reason | omittedText15}}
+                    {{ sankousho.recommendation_book_reason | omittedText15 }}
                     <nuxt-link :to="`/books/${sankousho.recommendation_book_id}`">
                       続きを読む
                     </nuxt-link>
@@ -145,6 +146,9 @@ export default {
   },
   goToDetailPage(sankousho){
     this.$router.push(`/books/${sankousho.recommendation_book_id }`)
+  },
+  goToProfile(id){
+    this.$router.push(`/myPage/${id}`)
   },
   filterSubject(subject){
     if(subject === "全て"){

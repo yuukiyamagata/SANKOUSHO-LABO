@@ -68,7 +68,7 @@
       <div v-if="isLoggedIn">
 
         <v-avatar size="53">
-          <v-img :src="iconURL"></v-img>
+          <v-img :src="iconURL" />
         </v-avatar>
 
         <v-btn
