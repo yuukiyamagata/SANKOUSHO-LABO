@@ -55,7 +55,7 @@
             <v-sheet elevation="1" tile>
               <v-card elevation="0">
                 <v-card-title class='text-h6 font-weight-black'>Comment</v-card-title>
-                    <v-sheet
+                  <v-sheet
                     elevation="0"
                     class="mx-auto"
                     >
@@ -107,9 +107,7 @@
                           </v-icon>
                       </v-row>
                     </v-card-actions>
-
-
-                    </v-sheet>
+                  </v-sheet>
               </v-card>
             </v-sheet>
           </v-col>

@@ -6,7 +6,7 @@
     </v-col>
     <v-col>
       <v-form ref="form" v-model="valid">
-        <nuxt-link to="/introduce#howToPost" class="mb-6 d-block">
+        <nuxt-link to="/introduction#howToPost" class="mb-6 d-block">
           作成方法はこちらから
         </nuxt-link>
         <v-row>
@@ -81,7 +81,8 @@
       >
 
     <v-card>
-        <v-card-title>お勧めする参考書を選択してください</v-card-title>
+        <v-card-title v-if="!noResult">お勧めする参考書を選択してください</v-card-title>
+        <v-card-title v-else class="mx-auto">検索結果は「０件」でした。<br>検索ワードを変更して再検索してください</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
 
@@ -150,6 +151,7 @@ export default {
       searchWord: '',
       searchResults:[],
       image_src_noImage: require('@/static/NoImage.png'),
+      noResult: false,
       valid: false,
       // データベースに登録
       sankousho:{
@@ -235,6 +237,10 @@ export default {
                 itemUrl,
               })
             })
+
+            if(!this.searchResults.length){
+              this.noResult = true;
+            }
 
           if(response === undefined){
             throw new "データの取得に失敗しました"

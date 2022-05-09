@@ -161,27 +161,7 @@ export default {
           });
       }
     },
-    logOut() {
-      if (window.confirm("ログアウトしますか？")) {
-        this.$fireAuth.signOut().then(() => {
-          alert('ログアウトしました。')
-          this.$router.push("/");
-        });
-      }
-    },
-    async unregister() {
-      const user = await this.$auth();
-      if(user.uid === ''||'' ) {
-        alert('テストユーザーは退会出来ません。退会機能を試したい場合は、ユーザーを新規登録して行ってください。')
-        return
-      }
-      if (window.confirm("本当に退会しますか？")) {
-        await this.$fireAuth.currentUser.delete().then(() => {
-          alert('退会が完了しました。ユーザーに関わるすべてのデータを削除しました。')
-          this.$router.push("/");
-        });
-      }
-    },
+ 
   },
   async created() {
     const user = await this.$auth();
