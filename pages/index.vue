@@ -89,13 +89,13 @@
       </v-row> -->
     </v-container>
 
-    <div v-if="noBook">
-      <div class="message__wrapper">
-        <div class="message__text">
-          <p>フィルター検索の結果は「０件」でした。</p>
-        </div>
-      </div>
-    </div>
+    <v-container v-if="noBook">
+      <v-row>
+        <v-col cols="12">
+          <div>フィルター検索の結果は「０件」でした</div>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 
 
@@ -176,15 +176,6 @@ export default {
 }
 .book-title  {
   overflow: hidden;
-}
-.message__wrapper {
-  width: 80%;
-  height: 100%;
-  margin: 0 auto;
-  & .message__text {
-    text-align: center;
-
-  }
 }
 </style>
 

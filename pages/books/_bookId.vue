@@ -180,8 +180,8 @@
 
 
 <script>
-import { collection, serverTimestamp, setDoc, doc  } from "firebase/firestore"
-import {  db } from "@/plugins/firebase"
+import { collection, serverTimestamp, setDoc, doc  } from "firebase/firestore";
+import {  db } from "@/plugins/firebase";
 export default {
   data(){
     return{
@@ -193,8 +193,8 @@ export default {
     bookDetailInfo(){
       return this.$store.getters['post/recommendationPosts'].find(post => post.recommendation_book_id === this.bookId)
     },
-    userInfo(){
-      return this.$store.getters['userInfo/user']
+    emailVerified(){
+      return this.$store.getters['userInfo/user'].emailVerified
     },
     loginUserUid(){
       return this.$store.getters['userInfo/loginUserInfo'].loginUserUid
@@ -208,12 +208,16 @@ export default {
     }
   },
   created(){
-    this.bookId = this.$route.params.bookId;
-    this.$store.dispatch('myPage/initMyFavoritePosts');
-    this.$store.dispatch('myPage/fetchMyFavoritePosts', this.loginUserUid);
+    this.bookId = this.$route.params.bookId
+    this.$store.dispatch('myPage/initMyFavoritePosts')
+    this.$store.dispatch('myPage/fetchMyFavoritePosts', this.loginUserUid)
   },
   methods:{
   async registerFavPost(){
+      if(!this.emailVerified) {
+        alert('確証のお願い')
+        return
+      }
       const result = window.confirm('お気に入りに登録しますか?')
       if(!result) return
       const favoritePost = {
@@ -236,7 +240,7 @@ export default {
       }catch(e){
         console.log(e)
       }
-      alert('お気に入りに登録しました')
+      alert('お気に入りに登録しました');
   },
   goToLogin(){
     this.$router.push('/auth/login');

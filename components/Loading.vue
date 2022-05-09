@@ -1,7 +1,7 @@
 <template>
-  <div v-if="isLoading === true" class="modal-mask" >
+  <div v-if="isLoading" class="modal-mask" >
     <div class="loading">
-      <vue-loading type="spin" color="blue" :size="{ width: '200px', height: '200px'}"></vue-loading>
+      <vue-loading type="spin" color="grey" :size="{ width: '200px', height: '200px'}"></vue-loading>
     </div>
   </div>
 </template>
