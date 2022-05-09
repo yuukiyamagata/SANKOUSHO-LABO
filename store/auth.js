@@ -109,8 +109,8 @@ export const actions = {
           commit('myPage/logoutReset', null, { root: true });
           alert(message);
           this.$router.push('/');
-        }catch(e){
-          console.error(e)
+        }catch(error){
+          console.error(error)
         }
     },
 
