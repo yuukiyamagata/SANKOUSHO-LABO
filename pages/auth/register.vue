@@ -102,6 +102,7 @@ export default {
   components:{
     Loading
   },
+  layout: 'empty',
   data(){
     return {
       image_src: require('@/static/logo.png'),

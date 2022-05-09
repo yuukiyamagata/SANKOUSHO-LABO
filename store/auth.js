@@ -8,7 +8,16 @@ import {
         signInWithEmailAndPassword,
         signOut
       } from 'firebase/auth'
-import { auth } from '@/plugins/firebase'
+import {
+        collection,
+        doc,
+        writeBatch,
+        where,
+        query,
+        getDocs,
+        deleteDoc
+      } from 'firebase/firestore';
+import { auth, db } from '@/plugins/firebase';
 
 
   export const state = () => ({
@@ -58,16 +67,16 @@ export const actions = {
 
       async signInWithGoogle({ dispatch }){
         const provider = new GoogleAuthProvider();
-        try {
-            const result = await signInWithPopup(auth, provider)
-            const isNewUser = getAdditionalUserInfo(result).isNewUser;
-            dispatch('userInfo/createUser', isNewUser, { root: true })
-            alert('Googleのサインインに成功しました')
-            this.$router.push('/')
+        try{
+          const result = await signInWithPopup(auth, provider)
+          const isNewUser = getAdditionalUserInfo(result).isNewUser;
+          dispatch('userInfo/createUser', isNewUser, { root: true })
+          alert('Googleのサインインに成功しました')
+          this.$router.push('/')
         }catch(error){
-            const credential = GoogleAuthProvider.credentialFromError(error);
-            console.log({ 'code': error.code, 'message': error.message, credential }) // eslint-disable-line
-            alert('ログインに失敗しました')
+          const credential = GoogleAuthProvider.credentialFromError(error);
+          console.log({ 'code': error.code, 'message': error.message, credential }) // eslint-disable-line
+          alert('ログインに失敗しました')
         }
       },
 
@@ -90,7 +99,7 @@ export const actions = {
         }
       },
 
-      async logout({ commit }) {
+    async logout({ commit }, message ) {
         try{
           await signOut(auth);
           commit('setLoginState', false);
@@ -98,21 +107,33 @@ export const actions = {
           commit('userInfo/logoutReset', null, { root: true });
           commit('post/logoutReset', null, { root: true });
           commit('myPage/logoutReset', null, { root: true });
-          alert('ログアウトしました');
+          alert(message);
           this.$router.push('/');
         }catch(e){
           console.error(e)
         }
     },
 
-    deleteUser({ commit }){
-      commit('setLoginState', false);
-      commit('setUserEmail', '');
-      commit('userInfo/logoutReset', null, { root: true });
-      commit('post/logoutReset', null, { root: true });
-      commit('myPage/logoutReset', null, { root: true });
-      this.$router.push('/');
+    async deleteUser({ dispatch }, { uid, message }){
+      console.log(uid);
+      const usersRef = doc(collection(db, 'users'), uid);
+      try{
+          await deleteDoc(usersRef)
+          const batch = writeBatch(db);
+          const postsRef = collection(db, "post_recommendations")
+          const postQuery = query(postsRef, where("post_user_uid", "==", uid))
+          const querySnapShot = await getDocs(postQuery)
+          querySnapShot.forEach(doc => {
+            batch.delete(doc.ref);
+          })
+          await batch.commit();
+          dispatch('logout', message);
+          this.$router.push('/');
+      }catch(error){
+        console.error(error)
+      }
     }
-  }
+
+}
 
 

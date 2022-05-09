@@ -64,7 +64,6 @@ export const actions = {
       const querySnapshot = await getDocs(postQuery);
       const postsData = querySnapshot.docs.map(doc => doc.data())
       commit('setPostInfo', postsData)
-      console.log(postsData)
     }catch( e ){
       alert('データの取得に失敗しました')
       location.reload();
@@ -83,8 +82,8 @@ export const actions = {
         commit("noBook")
       }
     }catch(e){
-      // alert('データの取得に失敗しました')
-      // location.reload();
+      alert('データの取得に失敗しました')
+      location.reload();
       console.error( e )
     }
   },

@@ -80,10 +80,12 @@ export default {
   computed:{
     currentEmail(){
       return this.$store.getters['auth/userEmail']
+    },
+    uid(){
+      return this.$store.getters['userInfo/loginUserInfo'].loginUserUid
     }
   },
   created(){
-    console.log(this.currentEmail)
   },
   methods:{
     confirmAction(text){
@@ -114,14 +116,18 @@ export default {
         console.error(error);
       }
     },
-    async withdrawUser(){
+  async withdrawUser(){
       if(!this.confirmAction('退会してもよろしいですか？')) return
       const user = auth.currentUser;
+      const additionalInfo = {
+        uid: this.uid,
+        message: '退会が完了しました。ユーザーに紐づくデータを全て削除しました。'
+      }
       try{
-          await deleteUser(user)
-          this.$store.dispatch('auth/deleteUser');
-          alert('退会が完了しました。ユーザーに紐づくデータを全て削除しました。');
+        await deleteUser(user)
+        this.$store.dispatch('auth/deleteUser', additionalInfo);
       }catch(error){
+        console.log(error)
       }
     },
   }

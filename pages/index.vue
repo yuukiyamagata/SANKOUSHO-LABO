@@ -5,7 +5,6 @@
     >
       <v-tabs
         center-active
-        right
         background-color="transparent"
         >
         <v-tab

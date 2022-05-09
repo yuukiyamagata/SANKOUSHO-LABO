@@ -104,7 +104,6 @@ export default {
         {name: 'ログアウト',icon: 'mdi-logout', action: 'logout'},
         {name: '設定', icon: 'mdi-cog', action: 'settings'},
       ],
-      uid: '',
     }
   },
   computed:{
@@ -116,10 +115,10 @@ export default {
     },
     iconURL(){
       return this.$store.getters['userInfo/loginUserInfo'].iconURL
+    },
+    uid(){
+      return this.$store.getters['userInfo/loginUserInfo'].loginUserUid
     }
-  },
-  created(){
-      this.uid = this.$store.getters['userInfo/loginUserInfo'].loginUserUid
   },
   methods:{
     createPost(){
@@ -138,7 +137,7 @@ export default {
       if(action === 'logout'){
         const result = confirm('ログアウトしますか？')
         if(!result) return
-        this.$store.dispatch("auth/logout")
+        this.$store.dispatch("auth/logout", 'ログアウトに成功しました')
       }
 
       if(action === 'goToMyPage'){
