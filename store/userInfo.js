@@ -23,7 +23,7 @@ export const state = () => ({
   loginUserInfo: {
     userName: '',
     introduction : '',
-    iconURL: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+    iconURL: "https://cdn.vuetifyjs.com/images/john.jpg",
     loginUserUid:'',
   }
 })
@@ -62,7 +62,7 @@ export const mutations = {
     state.loginUserInfo = {
       userName: '',
       loginUserUid:'',
-      iconURL: "https://example.com/jane-q-user/profile.jpg",
+      iconURL: "https://cdn.vuetifyjs.com/images/john.jpg",
     }
   },
 }

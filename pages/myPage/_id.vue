@@ -78,7 +78,6 @@
           {tabText: 'MyPost', link: 'myPost'},
           {tabText: 'favorite', link: 'favorite'},
         ],
-        image_src: require('@/static/TwitterLogo.png'),
         myPageUid: '',
         visitorUid:'',
         isMySelf: false,

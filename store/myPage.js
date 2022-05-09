@@ -1,6 +1,6 @@
 
-import { doc, collection, getDoc, getDocs, where, orderBy, query } from 'firebase/firestore'
-import { db } from '@/plugins/firebase.js'
+import { doc, collection, getDoc, getDocs, where, orderBy, query } from 'firebase/firestore';
+import { db } from '@/plugins/firebase.js';
 
 
 export const state = () => ({
@@ -8,7 +8,7 @@ export const state = () => ({
     userName: '',
     introduction: '',
     myPageUid: '',
-    iconURL: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+    iconURL: "https://cdn.vuetifyjs.com/images/john.jpg"
   },
   myPosts:[],
   myFavoritePosts:[],
@@ -50,13 +50,14 @@ export const mutations = {
   editMyPageProfile(state, myPageInfo){
     state.myProfile.userName = myPageInfo.userName;
     state.myProfile.iconURL = myPageInfo.iconURL;
-    state.myProfile.introduction = myPageInfo.introduction
+    state.myProfile.introduction = myPageInfo.introduction;
   },
   logoutReset(state){
     state.myProfile.userName = '';
     state.myProfile.introduction = '';
     state.myProfile.myPageUid = '';
     state.myProfile.iconURL = 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg';
+    state.myPosts = [];
     state.myFavoritePosts = [];
   },
   }
@@ -64,42 +65,42 @@ export const mutations = {
 // プロフィール情報を取得
 export const actions = {
   initMyPosts({commit }){
-    commit("initMyPosts")
+    commit("initMyPosts");
   },
   initMyFavoritePosts({ commit }){
-    commit('initMyFavoritePosts')
+    commit('initMyFavoritePosts');
   },
   async getUserInfo({ commit }, uid) {
     try {
-      console.log(uid)
-      const docRef = doc(db, "users", uid)
-      const docSnap = await getDoc(docRef)
-      commit('setUserInfo', docSnap.data())
+      console.log(uid);
+      const docRef = doc(db, "users", uid);
+      const docSnap = await getDoc(docRef);
+      commit('setUserInfo', docSnap.data());
     } catch(error) {
-      console.error( error )
+      console.error( error );
     }
   },
   async fetchMyPosts({ commit }, uid){
       const postRef = collection(db, "post_recommendations");
-      const postQuery = query(postRef, where("post_user_uid", "==", uid), orderBy("created_at", "desc"))
+      const postQuery = query(postRef, where("post_user_uid", "==", uid), orderBy("created_at", "desc"));
       try{
           const querySnapshot = await getDocs(postQuery)
           querySnapshot.forEach(doc  => {
-            commit('pushMyPosts', doc.data())
+            commit('pushMyPosts', doc.data());
           })
       }catch(e){
-          console.error(e)
+          console.error(e);
       }
   },
   async fetchMyFavoritePosts( { commit }, uid){
     try{
-      const favPostsRef = collection(db, "users", uid, "favorite_posts")
-      const snapShots = await getDocs(favPostsRef)
+      const favPostsRef = collection(db, "users", uid, "favorite_posts");
+      const snapShots = await getDocs(favPostsRef);
       if(!snapShots){
         return
       }else{
         snapShots.forEach(doc => {
-          commit('pushFavPostsRef', doc.data())
+          commit('pushFavPostsRef', doc.data());
         })
       }
     }catch(e){
@@ -107,10 +108,10 @@ export const actions = {
     }
   },
   editMyPageProfile( { commit }, myPageInfo){
-    commit('editMyPageProfile', myPageInfo)
+    commit('editMyPageProfile', myPageInfo);
   },
   logoutReset({ commit }){
-    commit('logoutReset')
+    commit('logoutReset');
   },
 }
 

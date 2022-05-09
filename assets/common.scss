@@ -31,7 +31,14 @@
     text-decoration: none;
   }
 
+  .text-transform-none {
+    text-transform: none !important;
+  }
 
 
   // コンポーネント
+
+  .auth-button-width {
+    width: 85%;
+  }
 

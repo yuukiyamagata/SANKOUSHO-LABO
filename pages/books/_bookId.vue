@@ -55,7 +55,7 @@
             <v-sheet elevation="1" tile>
               <v-card elevation="0">
                 <v-card-title class='text-h6 font-weight-black'>Comment</v-card-title>
-                    <v-sheet
+                  <v-sheet
                     elevation="0"
                     class="mx-auto"
                     >
@@ -107,9 +107,7 @@
                           </v-icon>
                       </v-row>
                     </v-card-actions>
-
-
-                    </v-sheet>
+                  </v-sheet>
               </v-card>
             </v-sheet>
           </v-col>
@@ -180,8 +178,8 @@
 
 
 <script>
-import { collection, serverTimestamp, setDoc, doc  } from "firebase/firestore"
-import {  db } from "@/plugins/firebase"
+import { collection, serverTimestamp, setDoc, doc  } from "firebase/firestore";
+import {  db } from "@/plugins/firebase";
 export default {
   data(){
     return{
@@ -193,8 +191,8 @@ export default {
     bookDetailInfo(){
       return this.$store.getters['post/recommendationPosts'].find(post => post.recommendation_book_id === this.bookId)
     },
-    userInfo(){
-      return this.$store.getters['userInfo/user']
+    emailVerified(){
+      return this.$store.getters['userInfo/user'].emailVerified
     },
     loginUserUid(){
       return this.$store.getters['userInfo/loginUserInfo'].loginUserUid
@@ -208,12 +206,16 @@ export default {
     }
   },
   created(){
-    this.bookId = this.$route.params.bookId;
-    this.$store.dispatch('myPage/initMyFavoritePosts');
-    this.$store.dispatch('myPage/fetchMyFavoritePosts', this.loginUserUid);
+    this.bookId = this.$route.params.bookId
+    this.$store.dispatch('myPage/initMyFavoritePosts')
+    this.$store.dispatch('myPage/fetchMyFavoritePosts', this.loginUserUid)
   },
   methods:{
   async registerFavPost(){
+      if(!this.emailVerified) {
+        alert('確証のお願い')
+        return
+      }
       const result = window.confirm('お気に入りに登録しますか?')
       if(!result) return
       const favoritePost = {
@@ -236,7 +238,7 @@ export default {
       }catch(e){
         console.log(e)
       }
-      alert('お気に入りに登録しました')
+      alert('お気に入りに登録しました');
   },
   goToLogin(){
     this.$router.push('/auth/login');

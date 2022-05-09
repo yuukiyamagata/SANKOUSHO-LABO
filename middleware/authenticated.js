@@ -10,3 +10,5 @@ export default function({ store, route, redirect }){
     }
   })
 }
+
+// 順番 middleware -> auth.js

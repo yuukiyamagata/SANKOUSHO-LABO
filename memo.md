@@ -1,52 +1,21 @@
-
-
 ## やること
 Index画面のハートアイコン
-ログイン時に既にログイン済みならどうするか
 
 
-~~~
+## authエラーハンドリング
+  // エラー画面へ遷移
+  actionに書く dispathで呼ぶ
+  errorEmail({ commit }) {
+    this.$router.push('errorEmail')
+  },
 
-export default function({
-  $firebase, store, state, redirect
-})
-{
-  const isAuthenticated = store.getters['auth/getLoggedIn']
-  string.match(/文字列/)の文字列を含むかのチェック
-  if(!isAuthenticated && !route.path.match(/\auth\/)){
-    // \（バックスラッシュ）で逃している
-    redirect('/auth/login')
-  }
-
-}
+    //パスワード変更メールを送信
+  changePassword({ commit }, email) {
+    auth.sendPasswordResetEmail(email)
+  },
 
 
-   middleware/authenticatd.js
-
-   // import { getAuth, onAuthStateChanged} from 'firebase/auth'
-
-// export default function({
-//   $firebase,
-//   store,
-//   route,
-//   redirect,
-
-// })
-// {
-//   const auth = getAuth($firebase)
-//   if(!store.getters['auth/getLoggedIn']){
-//     onAuthStateChanged(auth, user => {
-//       if(user){
-//         store.dispatch('auth/addUserInfo', user)
-//       }else if (!route.path.match(/\/auth\//)){
-//         redirect('/auth/login')
-//       }
-//     })
-//   }
-
-// }
-
-Hosting
+## Hosting
 
 configあり
 Use an existing project
@@ -71,95 +40,137 @@ npm run generate
 fireabse deploy
 
 
+~~~js
+middleware/authenticatd.js
+
+import { getAuth, onAuthStateChanged} from 'firebase/auth'
+
+export default function({
+  $firebase,
+  store,
+  route,
+  redirect,
+
+})
+{
+  const auth = getAuth($firebase)
+  if(!store.getters['auth/getLoggedIn']){
+    onAuthStateChanged(auth, user => {
+      if(user){
+        store.dispatch('auth/addUserInfo', user)
+      }else if (!route.path.match(/\/auth\//)){
+            // string.match(/文字列/)の文字列を含むかのチェック
+            // \（バックスラッシュ）で逃している
+        redirect('/auth/login')
+      }
+    })
+  }
+
+}
+~~~
 
 
 
 
 
 
-## authエラーハンドリング
-  // エラー画面へ遷移
-  actionに書く dispathで呼ぶ
-  errorEmail({ commit }) {
-    this.$router.push('errorEmail')
+
+
+
+
+
+<template>
+  <v-container>
+    <div>
+      <span>現在登録されているメールアドレス：</span>
+      <div class="d-inline">
+        <div class="my-5">
+          {{ email }}
+        </div>
+        <v-form v-show="!change" style="width: 500px">
+          <v-row align="center">
+            <v-col cols="10">
+          <v-text-field type="text" color="info" label="新しいメールアドレス"></v-text-field>
+            </v-col>
+            <v-col cols="2">
+              <v-btn class="save white--text" @click='changeEmail'>変更</v-btn>
+            </v-col>
+          </v-row>
+        </v-form>
+      </div>
+      <v-btn class="save white--text" @click="change = !change">メールアドレスを変更する</v-btn>
+    </div>
+    <v-divider class="mt-2 mb-6"></v-divider>
+    <div>
+      <v-btn class="save white--text" @click="passwordReset">パスワードを変更する</v-btn>
+      <p class="mt-4">
+        現在登録されているメールアドレスにパスワード変更メールが送信されます。
+      </p>
+    </div>
+    <v-divider class="mt-2 mb-6"></v-divider>
+    <div>
+      <v-btn @click="logOut">ログアウト</v-btn>
+      <v-btn @click="unregister" class="red white--text ml-6"
+        >退会する</v-btn
+      >
+    </div>
+  </v-container>
+</template>
+
+<script>
+export default {
+  layout: "navbar",
+  middleware: ["checkLogin"],
+  data() {
+    return {
+      email: "",
+      change: true,
+    };
   },
-
-    //パスワード変更メールを送信
-  changePassword({ commit }, email) {
-    auth.sendPasswordResetEmail(email)
+  methods: {
+    changeEmail() {
+      const user = this.$auth();
+      user
+        .updateEmail(this.email)
+        .then(function () {
+          this.email = "";
+          alert("メールアドレスが正常に変更されました。");
+        })
+        .catch(function (error) {
+          alert(
+            "メールアドレスが正常に変更されませんでした。もう一度入力し直してください。"
+          );
+          this.email = "";
+        });
+    },
+    passwordReset() {
+      if (
+        window.confirm(
+          "現在登録されているメールアドレスにパスワード変更のメールを送信しますか？"
+        )
+      ) {
+        const user = this.$fireAuth.currentUser;
+        this.$fireAuth
+          .sendPasswordResetEmail(user.email)
+          .then(function () {
+            // Email sent.
+            alert("Email sent");
+          })
+          .catch(function (error) {
+            // An error happened.
+          });
+      }
+    },
+ 
   },
+  async created() {
+    const user = await this.$auth();
+    this.email = user.email;
+  },
+};
+</script>
 
-
-
-
-   async signIn({ dispatch, commit }, { email, password }) {
-    this.$router.push('signInLoading')
-    try {
-        const result = await auth.signInWithEmailAndPassword(email, password)
-        // dispatch('profile/setUser', result.user, { root: true })
-        dispatch('profile/getUser', null, { root: true })
-
-    } catch (error) {
-        if (error.code == "auth/wrong-password") {
-          alert('パスワードが間違っています。')
-        } else if (error.code == "auth/user-not-found") {
-          alert('メールアドレスが間違っています。')
-        } else {
-          alert('ログインできません。')
-          dispatch('logout')
-        }
-        
-
-
-
-
-  <v-container fluid>
-        <v-row>
-          <v-col
-            v-for="book in myFavBooks"
-            :key="book.recommendation_book_id"
-            cols="8"
-            sm="6"
-            md="4"
-            class="sp-display"
-          >
-            <v-card
-              color="grey lighten-5"
-              maxWidth="300px"
-              >
-              <v-container fluid>
-                <v-row noGutters>
-                    <v-col cols="6" class="mx-auto">
-                      <v-responsive :aspectRatio="16/9">
-                        <v-img
-                          :src="book.recommendation_book_imageURL"
-                        >
-                        </v-img>
-                      </v-responsive>
-                    </v-col>
-                  <v-col cols="12">
-                    <v-card-title>
-                      {{ book.title }}
-                    </v-card-title>
-
-                    <v-divider class="mb-4"></v-divider>
-                  </v-col>
-
-                  <v-col cols="9">
-                      <nuxt-link
-                      :to="`/books/${sankousho.recommendation_book_id }`">
-                      詳細をみる
-                    </nuxt-link>
-                  </v-col>
-
-                </v-row>
-              </v-container>
-
-            </v-card>
-
-          </v-col>
-        </v-row>
-    </v-container>
-
+<style>
+</style>
 
 

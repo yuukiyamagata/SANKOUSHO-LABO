@@ -91,35 +91,43 @@
 </template>
 
 <script>
-import { auth } from "@/plugins/firebase"
 export default {
   data() {
     return {
       drawer: null,
       img_src: require('@/static/logo.png'),
       navLists:[
-        {name: 'About Page', icon: 'mdi-book-open-blank-variant', to: '/introduction'},
+        {name: 'About', icon: 'mdi-book-open-blank-variant', to: '/introduction'},
         {name: 'Home', icon: 'mdi-home', to: '/'},
-        {name: '投稿', icon: 'mdi-pencil', to: '/posts/create'},
+        {name: '投稿', icon: 'mdi-pencil', action: 'createPost'},
         {name: 'マイページ',icon: 'mdi-account', action: 'goToMyPage'},
         {name: 'ログアウト',icon: 'mdi-logout', action: 'logout'},
-        {name: '設定', icon: 'mdi-cogs', action: 'settings'},
+        {name: '設定', icon: 'mdi-cog', action: 'settings'},
       ],
-      currentUser: '',
     }
   },
   computed:{
     isLoggedIn(){
       return this.$store.getters['auth/isLoggedIn']
     },
+    isVerified(){
+      return this.$store.getters['userInfo/user'].emailVerified
+    },
     iconURL(){
       return this.$store.getters['userInfo/loginUserInfo'].iconURL
+    },
+    uid(){
+      return this.$store.getters['userInfo/loginUserInfo'].loginUserUid
     }
   },
-  created(){
-      this.currentUser = this.$store.getters['userInfo/user']
-  },
   methods:{
+    createPost(){
+      if(this.isVerified){
+        this.$router.push('/posts/create')
+      }else{
+        alert('確証のお願い')
+      }
+    },
     navClick(action){
 
       if(action === 'settings'){
@@ -128,31 +136,20 @@ export default {
 
       if(action === 'logout'){
         const result = confirm('ログアウトしますか？')
-        if(!result) return // eslint-disable-line;
-        this.$store.dispatch("auth/logout")
+        if(!result) return
+        this.$store.dispatch("auth/logout", 'ログアウトに成功しました')
       }
 
       if(action === 'goToMyPage'){
-        if(this.checkAuth()){
-          const uid = auth.currentUser.uid
-          this.$router.push(`/mypage/${uid}`)
+        if(this.isVerified){
+          this.$router.push(`/myPage/${this.uid}`)
         }else{
           alert("確証のお願い")
         }
       }
+
+      if(action === 'createPost') this.createPost();
     },
-    createPost(){
-      if(this.checkAuth()){
-        this.$router.push('/posts/create')
-      }else{
-        alert("確証のお願い")
-      }
-      // User情報の確認認可しているかどうか
-    },
-    checkAuth(){
-      const user = auth.currentUser
-      return user.emailVerified
-    }
   }
 
 }

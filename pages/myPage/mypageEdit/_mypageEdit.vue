@@ -78,8 +78,7 @@ export default {
     }
   },
   created(){
-    this.loginUserUid = this.$route.params.myPageEdit
-    console.log(this.loginUserUid)
+    this.loginUserUid = this.$route.params.mypageEdit
     this.myProfile.userName = this.$store.getters['myPage/myProfile'].userName
     this.myProfile.introduction = this.$store.getters['myPage/myProfile'].introduction
     this.myProfile.iconURL = this.$store.getters['myPage/myProfile'].iconURL

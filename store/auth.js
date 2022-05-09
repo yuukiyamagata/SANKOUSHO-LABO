@@ -8,105 +8,130 @@ import {
         signInWithEmailAndPassword,
         signOut
       } from 'firebase/auth'
-import { auth } from '@/plugins/firebase'
+import {
+        collection,
+        doc,
+        writeBatch,
+        where,
+        query,
+        getDocs,
+        deleteDoc
+      } from 'firebase/firestore';
+import { auth, db } from '@/plugins/firebase';
 
 
   export const state = () => ({
     isLoggedIn: false,
+    userEmail:'',
   })
 
   export const getters = {
     isLoggedIn: state => state.isLoggedIn,
+    userEmail: state => state.userEmail
   }
 
   export const mutations = {
     setLoginState(state, isLoggedIn) {
       state.isLoggedIn = isLoggedIn
     },
+    setUserEmail(state, email){
+      state.userEmail = email
+    },
   }
 
 export const actions = {
-  // アカウント登録
-  async RegisterWithEmailAndPassword({ dispatch }, { userName, email, password }) {
-
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-        await sendEmailVerification(auth.currentUser)
-        .then(() => alert('確証メールを送信しました。メールボックスをご確認ください'))
-        .then(() => this.$router.push('/'))
-        // 初回ログインの確認
-        const isNewUser = getAdditionalUserInfo(userCredential).isNewUser
-
-        await updateProfile(userCredential.user, {
-          displayName: userName,
-          photoURL: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-        })
-        .then(() => {
-            dispatch('userInfo/setUserInfo', userCredential.user, { root: true })
-            // ユーザーデータをUsersコレクションに格納する。
-            dispatch('userInfo/createUser', isNewUser, { root: true })
+    async RegisterWithEmailAndPassword({ dispatch, commit }, { userName, email, password }){
+      try {
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+          await sendEmailVerification(auth.currentUser)
+          const isNewUser = getAdditionalUserInfo(userCredential).isNewUser // 初回ログインの確認
+          await updateProfile(userCredential.user, {
+            displayName: userName,
+            photoURL: "https://cdn.vuetifyjs.com/images/john.jpg"
           })
-          .catch(e => console.log(e) ) // eslint-disable-line
+          dispatch('userInfo/setUserInfo', userCredential.user, { root: true})
+          dispatch('userInfo/createUser', isNewUser, { root: true })
+          commit('setUserEmail', email)
+          alert('確証メールを送信しました。メールボックスをご確認ください')
+          this.$router.push('/')
 
           }catch(error){
-            console.log({ 'code': error.code, 'message': error.message }) // eslint-disable-line
-            if (error.code === "auth/email-already-in-use") {
-              // dispatch('errorEmail')
-              alert('既にメールアドレスが使用されています')
+            if (error.code === 'auth/email-already-in-use') {
+              alert('既にこのメールアドレスは使用されています')
             }else {
               alert('新規登録に失敗しました。')
+              dispatch('logout')
             }
           }
-      },
+        },
 
       async signInWithGoogle({ dispatch }){
         const provider = new GoogleAuthProvider();
-        try {
-            const result = await signInWithPopup(auth, provider)
-            const isNewUser = getAdditionalUserInfo(result).isNewUser;
-            dispatch('userInfo/createUser', isNewUser, { root: true })
-            alert('Googleのサインインに成功しました')
-            this.$router.push('/')
+        try{
+          const result = await signInWithPopup(auth, provider)
+          const isNewUser = getAdditionalUserInfo(result).isNewUser;
+          dispatch('userInfo/createUser', isNewUser, { root: true })
+          alert('Googleのサインインに成功しました')
+          this.$router.push('/')
         }catch(error){
-            const credential = GoogleAuthProvider.credentialFromError(error);
-            console.log({ 'code': error.code, 'message': error.message, credential }) // eslint-disable-line
-            alert('ログインに失敗しました')
+          const credential = GoogleAuthProvider.credentialFromError(error);
+          console.log({ 'code': error.code, 'message': error.message, credential }) // eslint-disable-line
+          alert('ログインに失敗しました')
         }
       },
 
-        async login( { commit, dispatch }, { email, password}) {
+      async login( { commit, dispatch }, { email, password}) {
+        try{
           await signInWithEmailAndPassword(auth, email, password)
-          .then( userCredential => {
-            commit('setLoginState', true)
-            dispatch('userInfo/fetchUserInfo', null, { root: true})
-            alert('ログインしました')
-            this.$router.push('/')
-          })
-          .catch(error => {
-            if (error.code === "auth/wrong-password") {
-              alert('パスワードが間違っています。')
-            } else if (error.code === "auth/user-not-found") {
-              alert('メールアドレスが間違っています。')
-            } else {
-              alert('ログインできません。')
-              dispatch('logout')
-            }
-          })
+          commit('setUserEmail', email)
+          dispatch('userInfo/fetchUserInfo', null, { root: true})
+          alert('ログインしました')
+          this.$router.push('/')
+        }catch(error){
+          if (error.code === 'auth/wrong-password') {
+            alert('パスワードが間違っています。')
+          } else if (error.code === 'auth/user-not-found') {
+            alert('メールアドレスが間違っています。')
+          } else {
+            alert('ログインできません。')
+            dispatch('logout')
+          }
+        }
       },
 
-      async logout({ commit }) {
-        await signOut(auth).then(() => {
-          commit('setLoginState', false)
-          commit('userInfo/logoutReset', null, { root: true })
-          commit('post/logoutReset', null, { root: true })
-          commit('myPage/logoutReset', null, { root: true })
-        })
-        .catch(e => {
-          console.log(e)
-        })
-          alert('ログアウトしました')
-          this.$router.push('/')
-        },
-  }
+    async logout({ commit }, message ) {
+        try{
+          await signOut(auth);
+          commit('setLoginState', false);
+          commit('setUserEmail', '');
+          commit('userInfo/logoutReset', null, { root: true });
+          commit('post/logoutReset', null, { root: true });
+          commit('myPage/logoutReset', null, { root: true });
+          alert(message);
+          this.$router.push('/');
+        }catch(error){
+          console.error(error)
+        }
+    },
+
+    async deleteUser({ dispatch }, { uid, message }){
+      console.log(uid);
+      const usersRef = doc(collection(db, 'users'), uid);
+      try{
+          await deleteDoc(usersRef)
+          const batch = writeBatch(db);
+          const postsRef = collection(db, "post_recommendations")
+          const postQuery = query(postsRef, where("post_user_uid", "==", uid))
+          const querySnapShot = await getDocs(postQuery)
+          querySnapShot.forEach(doc => { batch.delete(doc.ref); });
+          await batch.commit();
+          dispatch('logout', message);
+          this.$router.push('/');
+      }catch(error){
+        console.error(error)
+      }
+    }
+
+}
 
 
