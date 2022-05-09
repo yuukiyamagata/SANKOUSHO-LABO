@@ -123,9 +123,7 @@ export const actions = {
           const postsRef = collection(db, "post_recommendations")
           const postQuery = query(postsRef, where("post_user_uid", "==", uid))
           const querySnapShot = await getDocs(postQuery)
-          querySnapShot.forEach(doc => {
-            batch.delete(doc.ref);
-          })
+          querySnapShot.forEach(doc => { batch.delete(doc.ref); });
           await batch.commit();
           dispatch('logout', message);
           this.$router.push('/');
