@@ -4,7 +4,7 @@
     tile
   >
   <v-card-title class="pl-2 pt-3 h-3 font-weight-bold">
-    My FavoritePosts
+    My FavoritePost
   </v-card-title>
 
     <v-container fluid>
