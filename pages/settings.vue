@@ -23,7 +23,7 @@
             ></v-text-field>
             <v-row>
               <v-col>
-                <v-btn class="info" elevation="1" @click="updateEmail">このメールアドレスに変更する</v-btn>
+                <v-btn class="info" elevation="1" @click="validate(email)">このメールアドレスに変更する</v-btn>
               </v-col>
             </v-row>
           </v-col>
@@ -37,7 +37,7 @@
                 :appendIcon="isShow ? 'mdi-eye' : 'mdi-eye-off'"
                 label="パスワード"
                 @click:append="isShow = !isShow"/>
-              <v-btn color="info" elevation="1" @click="resetPassWord">このパスワードに変更する</v-btn>
+              <v-btn color="info" elevation="1" @click="validate(password)">このパスワードに変更する</v-btn>
           </v-col>
         </v-row>
       </v-form>
@@ -85,9 +85,11 @@ export default {
       return this.$store.getters['userInfo/loginUserInfo'].loginUserUid
     }
   },
-  created(){
-  },
   methods:{
+    validate(select){
+      this.$refs.form.validate()
+      this.valid && select === 'email' ? this.updateEmail() : this.resetPassWord();
+    },
     confirmAction(text){
       const answer = confirm(text);
       return answer;
