@@ -66,6 +66,8 @@
 
 
 <script>
+import { collection, doc, deleteDoc } from 'firebase/firestore';
+import { db } from '@/plugins/firebase';
   export default {
     props:{
       isMySelf:{
@@ -92,8 +94,17 @@
     created(){
     },
     methods: {
-      deletePost(id){
-        console.log(id)
+      async deletePost(id){
+        const result = confirm('本当に削除してもよろしいでしょうか？');
+        if(!result) return;
+        try{
+          const docRef = doc(collection(db, "post_recommendations"), id);
+          await deleteDoc(docRef);
+          alert('削除に成功しました！');
+          location.reload();
+        }catch(e){
+          alert('削除に失敗しました。');
+        }
       },
       watchDetail(id){
         this.$router.push(`/books/${id}`)
