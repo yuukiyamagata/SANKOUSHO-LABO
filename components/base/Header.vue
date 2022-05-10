@@ -1,37 +1,12 @@
 <template>
   <div>
-    <v-navigation-drawer v-if="isLoggedIn" v-model="drawer" clipped app>
-        <v-container>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="title grey--text text--darken-2">
-                Navigation lists
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-divider></v-divider>
-
-          <v-list  nav>
-            <v-list-item
-            v-for="navList in navLists"
-            :key="navList.name"
-            :to="navList.to"
-            @click="navClick(navList.action)"
-            >
-              <v-list-item-icon>
-                <v-icon>{{ navList.icon }}</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>{{ navList.name }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-        </v-list>
-
-      </v-container>
-    </v-navigation-drawer>
-
+    <NavigationList
+      ref="navDrawer"
+      :isLoggedIn="isLoggedIn"
+      @nav-click="navClick"
+    />
     <v-app-bar app class="white m-0" clipped-left elevation="1">
-      <v-app-bar-nav-icon v-if="isLoggedIn"  @click="drawer=!drawer">
+      <v-app-bar-nav-icon v-if="isLoggedIn"  @click="drawerChange">
       </v-app-bar-nav-icon>
 
       <header class="p-0" @click="$router.push('/')">
@@ -87,64 +62,63 @@
   </v-app-bar>
 
 
+
 </div>
 </template>
 
 <script>
+import NavigationList from '@/components/base/NavigationList.vue';
 export default {
+  components: {
+    NavigationList,
+  },
   data() {
     return {
-      drawer: null,
       img_src: require('@/static/logo.png'),
-      navLists:[
-        {name: 'About', icon: 'mdi-book-open-blank-variant', to: '/introduction'},
-        {name: 'Home', icon: 'mdi-home', to: '/'},
-        {name: '投稿', icon: 'mdi-pencil', action: 'createPost'},
-        {name: 'マイページ',icon: 'mdi-account', action: 'goToMyPage'},
-        {name: 'ログアウト',icon: 'mdi-logout', action: 'logout'},
-        {name: '設定', icon: 'mdi-cog', action: 'settings'},
-      ],
     }
   },
   computed:{
     isLoggedIn(){
-      return this.$store.getters['auth/isLoggedIn']
+      return this.$store.getters['auth/isLoggedIn'];
     },
     isVerified(){
-      return this.$store.getters['userInfo/user'].emailVerified
+      return this.$store.getters['userInfo/user'].emailVerified;
     },
     iconURL(){
-      return this.$store.getters['userInfo/loginUserInfo'].iconURL
+      return this.$store.getters['userInfo/loginUserInfo'].iconURL;
     },
     uid(){
-      return this.$store.getters['userInfo/loginUserInfo'].loginUserUid
+      return this.$store.getters['userInfo/loginUserInfo'].loginUserUid;
     }
   },
   methods:{
+    drawerChange(){
+      this.$refs.navDrawer.drawer = !this.$refs.navDrawer.drawer;
+    },
     createPost(){
       if(this.isVerified){
-        this.$router.push('/posts/create')
+        this.$router.push('/posts/create');
       }else{
-        alert('確証のお願い')
+        console.log('入った')
+        this.$store.commit('auth/changeDialog');
       }
     },
     navClick(action){
-
       if(action === 'settings'){
-        this.$router.push('/settings')
+        this.$router.push('/settings');
       }
 
       if(action === 'logout'){
-        const result = confirm('ログアウトしますか？')
-        if(!result) return
-        this.$store.dispatch("auth/logout", 'ログアウトに成功しました')
+        const result = confirm('ログアウトしますか？');
+        if(!result) return;
+        this.$store.dispatch("auth/logout", 'ログアウトに成功しました');
       }
 
       if(action === 'goToMyPage'){
         if(this.isVerified){
-          this.$router.push(`/myPage/${this.uid}`)
+          this.$router.push(`/myPage/${this.uid}`);
         }else{
-          alert("確証のお願い")
+          this.$store.commit('auth/changeDialog');
         }
       }
 

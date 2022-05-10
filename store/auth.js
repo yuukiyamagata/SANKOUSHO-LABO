@@ -23,20 +23,26 @@ import { auth, db } from '@/plugins/firebase';
   export const state = () => ({
     isLoggedIn: false,
     userEmail:'',
+    dialog: false,
   })
 
   export const getters = {
     isLoggedIn: state => state.isLoggedIn,
-    userEmail: state => state.userEmail
+    userEmail: state => state.userEmail,
+    dialog: state => state.dialog,
   }
 
   export const mutations = {
     setLoginState(state, isLoggedIn) {
-      state.isLoggedIn = isLoggedIn
+      state.isLoggedIn = isLoggedIn;
     },
     setUserEmail(state, email){
-      state.userEmail = email
+      state.userEmail = email;
     },
+    changeDialog(state){
+      console.log(getters.dialog)
+      state.dialog = !state.dialog;
+    }
   }
 
 export const actions = {
@@ -102,8 +108,9 @@ export const actions = {
     async logout({ commit }, message ) {
         try{
           await signOut(auth);
-          commit('setLoginState', false);
           commit('setUserEmail', '');
+          commit('setLoginState', false);
+          commit('changeDialog', false)
           commit('userInfo/logoutReset', null, { root: true });
           commit('post/logoutReset', null, { root: true });
           commit('myPage/logoutReset', null, { root: true });
