@@ -1,36 +1,46 @@
 <template>
   <v-row>
-
     <v-col cols="auto">
       <v-dialog
+        v-model="dialog"
         transition="dialog-top-transition"
         max-width="600"
-      >
-        <template #activator="{ on, attrs }">
-          <v-btn
-            color="primary"
-            v-bind="attrs"
-            v-on="on"
-          >From the top</v-btn>
-        </template>
-        <template #default="dialog">
+        >
           <v-card>
             <v-toolbar
               color="primary"
               dark
-            >Opening from the top</v-toolbar>
+            >メール確証のお願い</v-toolbar>
             <v-card-text>
-              <div class="text-h2 pa-12">Hello world!</div>
+              <div class="text-h2 pa-12">
+                メール確証後ご利用いただけます。<br>
+                ご登録
+              </div>
             </v-card-text>
             <v-card-actions class="justify-end">
               <v-btn
                 text
-                @click="dialog.value = false"
+                @click="closeDialog"
               >Close</v-btn>
             </v-card-actions>
           </v-card>
-        </template>
       </v-dialog>
     </v-col>
   </v-row>
 </template>
+
+
+<script>
+export default {
+  data(){
+    return {
+      dialog: false,
+    }
+  },
+  methods:{
+    closeDialog(){
+      this.$emit('closeDialog')
+    }
+  }
+}
+</script>

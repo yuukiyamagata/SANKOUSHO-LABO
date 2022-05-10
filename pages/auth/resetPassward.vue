@@ -11,7 +11,7 @@
       <p>adjective</p>
       <div class="text--primary">
         relating to or dependent on charity; charitable.<br>
-        "an eleemosynary educational institution."
+
       </div>
     </v-card-text>
     <v-card-actions>
