@@ -64,8 +64,8 @@
             </div>
             <div class="btn-wrapper pt-8">
               <v-row class="d-flex flex-row-reverse">
-                <v-btn color="indigo" outlined class="ml-4"  @click="postBook">投稿</v-btn>
-                <v-btn outlined sm>プレビュー</v-btn>
+                <v-btn color="indigo white--text" class="ml-4"  @click="postBook">投稿する</v-btn>
+                <v-btn sm>プレビュー</v-btn>
               </v-row>
             </div>
           </v-col>
@@ -169,7 +169,6 @@ export default {
       ],
       reasonRules: [
         (v) => !!v || "必須項目です。",
-        (v) => (v && v.length <= 300) || "最大300文字です。",
       ],
       sankousyoCategoryRules: [(v) => !!v || "必須項目です。"],
       authorOrPublisherNameRules: [(v) =>(v && v.length <= 20) || "必須項目です。また最大20文字です。"],

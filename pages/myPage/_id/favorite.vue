@@ -4,25 +4,24 @@
     tile
   >
   <v-card-title class="pl-2 pt-3 h-3 font-weight-bold">
-    My Favorite Posts
+    My FavoritePosts
   </v-card-title>
 
     <v-container fluid>
 
       <v-row>
         <v-col
-          v-for="card in cards"
-          :key="card"
+          v-for="favPost in myFavPosts"
+          :key="favPost.postedID"
           cols="12"
           sm="6"
           md="4"
         >
           <v-card
               max-width="350"
-              class="p-relative"
             >
             <v-img
-              :src="`https://picsum.photos/200/300?image=${getImage()}`"
+              :src="favPost.postedBooKImageURL"
               max-width="200"
               height="300px"
               class="cursor mx-auto"
@@ -40,7 +39,9 @@
             <v-list-item>
 
               <v-list-item-content>
-                <v-list-item-title class="subtitle-2 font-weight-bold">aaa</v-list-item-title>
+                <v-list-item-title class="subtitle-2 font-weight-bold">
+                  {{ favPost.postedBookTitle }}
+                </v-list-item-title>
               </v-list-item-content>
 
               <v-list-item-action>
@@ -85,18 +86,17 @@
 
 <script>
   export default {
-    data: () => ({
-      types: ['Places to Be', 'Places to See'],
-      cards: ['Good', 'Best', 'Finest', 'bad'],
-    }),
+    data(){
+      return{
 
+      }
+    },
+    computed:{
+      myFavPosts(){
+        return this.$store.getters['myPage/myFavoritePosts'];
+      }
+    },
     methods: {
-      getImage () {
-        const min = 550
-        const max = 560
-
-        return Math.floor(Math.random() * (max - min + 1)) + min
-      },
     },
   }
 </script>

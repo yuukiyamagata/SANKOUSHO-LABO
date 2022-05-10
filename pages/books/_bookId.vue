@@ -63,6 +63,7 @@
                         <v-list-item-avatar
                           size="56"
                           color="primary"
+                          @click="goToProfile(bookDetailInfo.post_user_uid)"
                         >
                         <v-img :src="bookDetailInfo.iconURL"></v-img>
                         </v-list-item-avatar>
@@ -211,6 +212,15 @@ export default {
     this.$store.dispatch('myPage/fetchMyFavoritePosts', this.loginUserUid)
   },
   methods:{
+  goToLogin(){
+    this.$router.push('/auth/login');
+  },
+  goToRegister(){
+    this.$router.push('/auth/register');
+  },
+  goToProfile(id){
+    this.$router.push(`/myPage/${id}`)
+  },
   async registerFavPost(){
       if(!this.emailVerified) {
         alert('確証のお願い')
@@ -240,12 +250,6 @@ export default {
       }
       alert('お気に入りに登録しました');
   },
-  goToLogin(){
-    this.$router.push('/auth/login');
-  },
-  goToRegister(){
-    this.$router.push('/auth/register');
-  }
 }
 }
 </script>

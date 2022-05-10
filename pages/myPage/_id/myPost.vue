@@ -99,6 +99,7 @@
         this.$router.push(`/books/${id}`)
       },
       editMyPost(id){
+        this.$router.push(`/posts/${id}/postEdit`)
       },
       selectListAction(actionName, id){
         let executeFunc;

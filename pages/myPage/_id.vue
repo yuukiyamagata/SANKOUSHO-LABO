@@ -99,11 +99,12 @@
     },
     created(){
       this.myPageUid = this.$route.params.id
-      this.visitorUid = this.$store.getters['userInfo/user'].userUid
-      this.$store.dispatch('myPage/getUserInfo', this.myPageUid)
-      this.$store.dispatch('myPage/initMyPosts')
-      this.$store.dispatch('myPage/fetchMyPosts', this.myPageUid)
-      // お気に入りの取得とリセットの処理
+      this.visitorUid = this.$store.getters['userInfo/user'].userUid;
+      this.$store.dispatch('myPage/getUserInfo', this.myPageUid);
+      this.$store.dispatch('myPage/initMyPosts');
+      this.$store.dispatch('myPage/initMyFavoritePosts');
+      this.$store.dispatch('myPage/fetchMyFavoritePosts', this.myPageUid);
+      this.$store.dispatch('myPage/fetchMyPosts', this.myPageUid);
       if(this.myPageUid === this.visitorUid){
         this.isMySelf = true;
       }else{
