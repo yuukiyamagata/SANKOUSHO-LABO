@@ -46,7 +46,7 @@
           large
           elevation="1"
           class="mb-4 text-transform-none"
-          @click="RegisterWithEmailAndPassword"
+          @click="validate"
         >
         EmailとPassWordでユーザー情報を登録する
       </v-btn>
@@ -62,7 +62,7 @@
 
 
     <v-divider class="mx-4"></v-divider>
-        <v-form class="mt-4">
+
           <v-btn
             rounded
             class="mb-6 text-transform-none auth-button-width"
@@ -91,7 +91,6 @@
         </nuxt-link>
         </div>
 
-    </v-form>
   </v-card>
 </div>
 </template>
@@ -126,9 +125,10 @@ export default {
     }
   },
   methods:{
-    validate() {
-      this.$refs.form.validate();
-    },
+    validate(){
+        this.$refs.form.validate()
+        if(this.valid) this.RegisterWithEmailAndPassword();
+      },
     // Emailとパスワードによる新規登録
     RegisterWithEmailAndPassword() {
     this.isLoading = true
@@ -142,7 +142,7 @@ export default {
     // Googleで新規登録
     singInWithGoogle(){
       this.$store.dispatch('auth/signInWithGoogle')
-    }
+    },
   }
 
 }
