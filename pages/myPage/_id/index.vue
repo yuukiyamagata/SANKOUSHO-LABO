@@ -26,7 +26,7 @@
     </v-card-subtitle>
 
     <v-card-actions>
-      <v-btn
+        <v-btn
           elevation="0"
           color="indigo"
           class="mx-auto white--text"
