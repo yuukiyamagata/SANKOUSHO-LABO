@@ -1,6 +1,6 @@
 <template>
   <div class="py-5">
-    <Loading :isLoading="isLoading" />
+    <Loading />
   <v-card
     class="mx-auto text-center"
     maxWidth="384"
@@ -111,7 +111,6 @@ export default {
       password:'',
       isShow: false,
       valid: false,
-      isLoading: false,
       nameRules: [
         (v) => !!v || "user name is required",
         (v) => (v && v.length <= 30) || "最大30文字です。",
@@ -131,7 +130,7 @@ export default {
       },
     // Emailとパスワードによる新規登録
     RegisterWithEmailAndPassword() {
-    this.isLoading = true
+    this.$store.commit('auth/onLoading', true)
     this.$store.dispatch('auth/RegisterWithEmailAndPassword',
     {
       userName: this.userName,

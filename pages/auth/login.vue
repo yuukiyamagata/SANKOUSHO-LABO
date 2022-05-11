@@ -1,6 +1,6 @@
 <template>
 <div>
-  <Loading :isLoading="isLoading" />
+  <Loading />
   <v-card
     class="mx-auto text-center flat my-12"
     maxWidth="384"
@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     login() {
-      // this.isLoading = true
+      this.$store.commit('auth/onLoading', true);
       this.$store.dispatch('auth/login',{email: this.email, password: this.password})
     },
     loginWithGoogle() {

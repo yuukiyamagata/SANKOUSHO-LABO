@@ -24,12 +24,14 @@ import { auth, db } from '@/plugins/firebase';
     isLoggedIn: false,
     userEmail:'',
     dialog: false,
+    isLoading: false,
   })
 
   export const getters = {
     isLoggedIn: state => state.isLoggedIn,
     userEmail: state => state.userEmail,
     dialog: state => state.dialog,
+    isLoading: state => state.isLoading,
   }
 
   export const mutations = {
@@ -39,12 +41,15 @@ import { auth, db } from '@/plugins/firebase';
     setUserEmail(state, email){
       state.userEmail = email;
     },
+    onLoading(state, bool){
+      state.isLoading = bool;
+    },
     changeDialog(state){
       state.dialog = !state.dialog;
     },
     resetDialog(state){
       state.dialog = false;
-    }
+    },
   }
 
 export const actions = {
@@ -60,12 +65,14 @@ export const actions = {
           dispatch('userInfo/setUserInfo', userCredential.user, { root: true})
           dispatch('userInfo/createUser', isNewUser, { root: true })
           commit('setUserEmail', email)
-          alert('確証メールを送信しました。メールボックスをご確認ください')
-          this.$router.push('/')
+          alert('登録完了です！確証メールを送信しました。メールボックスをご確認ください');
+          commit('onLoading', false);
+          this.$router.push('/');
 
           }catch(error){
             if (error.code === 'auth/email-already-in-use') {
-              alert('既にこのメールアドレスは使用されています')
+              alert('既にこのメールアドレスは使用されています');
+              commit('onLoading', false);
             }else {
               alert('新規登録に失敗しました。')
               dispatch('logout')
@@ -73,18 +80,20 @@ export const actions = {
           }
         },
 
-      async signInWithGoogle({ dispatch }){
+      async signInWithGoogle({ dispatch, commit }){
         const provider = new GoogleAuthProvider();
         try{
           const result = await signInWithPopup(auth, provider)
           const isNewUser = getAdditionalUserInfo(result).isNewUser;
           dispatch('userInfo/createUser', isNewUser, { root: true })
           alert('Googleのサインインに成功しました')
+          commit('onLoading', false)
           this.$router.push('/')
         }catch(error){
           const credential = GoogleAuthProvider.credentialFromError(error);
           console.error({ 'code': error.code, 'message': error.message, credential }) // eslint-disable-line
           alert('ログインに失敗しました')
+          commit('onLoading', false);
         }
       },
 
@@ -94,15 +103,18 @@ export const actions = {
           commit('setUserEmail', email)
           dispatch('userInfo/fetchUserInfo', null, { root: true})
           alert('ログインしました')
+          commit('onLoading', false);
           this.$router.push('/')
         }catch(error){
           if (error.code === 'auth/wrong-password') {
-            alert('パスワードが間違っています。')
+            alert('パスワードが間違っています。');
+            commit('onLoading', false);
           } else if (error.code === 'auth/user-not-found') {
-            alert('メールアドレスが間違っています。')
+            alert('メールアドレスが間違っています。');
+            commit('onLoading', false);
           } else {
-            alert('ログインできません。')
-            dispatch('logout')
+            alert('ログインできません。');
+            dispatch('logout');
           }
         }
       },
