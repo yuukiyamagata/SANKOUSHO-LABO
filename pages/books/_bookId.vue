@@ -246,7 +246,7 @@ export default {
         this.$store.commit('myPage/pushFavPostsRef', favoritePost)
         await setDoc(favUserDocRef, favoriteUser)
       }catch(e){
-        console.log(e)
+        console.error(e);
       }
       alert('お気に入りに登録しました');
   },

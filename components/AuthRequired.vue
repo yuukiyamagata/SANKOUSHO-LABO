@@ -39,9 +39,6 @@ export default {
       }
     },
   },
-  created(){
-    console.log(this.dialog);
-  },
   methods:{
     closeDialog(){
       this.$store.commit('auth/changeDialog');

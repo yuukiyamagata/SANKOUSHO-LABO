@@ -37,7 +37,7 @@
               v-model="sankousho.author"
               label="著者・出版社"
               placeholder="(例) 数研出版"
-              :rules="authorOrPublisherNameRules"
+              :rules="authorNameRules"
             ></v-text-field>
             <v-textarea
               v-model="sankousho.reason"
@@ -65,7 +65,6 @@
             <div class="btn-wrapper pt-8">
               <v-row class="d-flex flex-row-reverse">
                 <v-btn color="indigo white--text" class="ml-4"  @click="validate">投稿する</v-btn>
-                <v-btn sm>プレビュー</v-btn>
               </v-row>
             </div>
           </v-col>
@@ -143,8 +142,8 @@
 
 <script>
 import axios from 'axios'
-import { collection, setDoc, doc, serverTimestamp } from 'firebase/firestore'
-import { db } from '@/plugins/firebase'
+import { collection, setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/plugins/firebase';
 export default {
   data(){
     return {
@@ -153,6 +152,7 @@ export default {
       image_src_noImage: require('@/static/NoImage.png'),
       noResult: false,
       valid: false,
+      bookInfo: '',
       // データベースに登録
       sankousho:{
         title: '',
@@ -171,7 +171,7 @@ export default {
         (v) => !!v || "必須項目です。",
       ],
       sankousyoCategoryRules: [(v) => !!v || "必須項目です。"],
-      authorOrPublisherNameRules: [(v) =>(v && v.length <= 20) || "必須項目です。また最大20文字です。"],
+      authorNameRules: [(v) =>(v && v.length <= 20) || "必須項目です。また最大20文字です。"],
       subjects:[
         '数学',
         '英語',
@@ -226,7 +226,6 @@ export default {
             response.Items.forEach(book => {
               const title = book.Item.title
               const author = book.Item.author
-              const publisherName = book.Item.publisherName
               const imageUrl = book.Item.largeImageUrl
               const itemUrl = book.Item.itemUrl
               const id = this.searchResults.length + 1
@@ -234,7 +233,7 @@ export default {
               this.searchResults.push({
                 id,
                 title,
-                author: author ? author: publisherName, // eslint-disable-line
+                author,
                 imageUrl,
                 itemUrl,
               })
@@ -283,6 +282,7 @@ export default {
             post_user_uid: this.loginUserUid,
             iconURL: this.iconURL,
           }
+          this.bookInfo = bookData;
           await setDoc(postRef, bookData)
           alert('投稿に成功しました！')
         }catch( error ){

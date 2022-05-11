@@ -99,7 +99,6 @@ export default {
       if(this.isVerified){
         this.$router.push('/posts/create');
       }else{
-        console.log('入った')
         this.$store.commit('auth/changeDialog');
       }
     },

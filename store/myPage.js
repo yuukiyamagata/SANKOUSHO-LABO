@@ -72,7 +72,6 @@ export const actions = {
   },
   async getUserInfo({ commit }, uid) {
     try {
-      console.log(uid);
       const docRef = doc(db, "users", uid);
       const docSnap = await getDoc(docRef);
       commit('setUserInfo', docSnap.data());

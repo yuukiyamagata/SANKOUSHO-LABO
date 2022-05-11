@@ -13,12 +13,11 @@ export default {
   components: {
     VueLoading
   },
-  props:{
-    isLoading:{
-      type: Boolean,
-      required: true
+  computed:{
+    isLoading(){
+      return this.$store.getters['auth/isLoading']
     }
-  },
+  }
 }
 </script>
 
