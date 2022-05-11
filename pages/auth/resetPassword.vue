@@ -5,10 +5,10 @@
     height="300"
   >
     <v-card-text>
-        <p class="text-h6 text--primary">
+        <p class="text-h6 text--black">
           パスワードの再設定を行います
         </p>
-      <p class="font-weight-medium text--primary">再設定パスワードを入力してください</p>
+      <p class="font-weight-medium text--black">再設定パスワードを入力してください</p>
       <v-form ref="form" v-model="valid">
         <v-text-field
           v-model="password"

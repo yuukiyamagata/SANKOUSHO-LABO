@@ -19,8 +19,12 @@
         <v-avatar class="my-n14">
           <v-img :src="myProfile.iconURL"></v-img>
         </v-avatar>
-        <v-btn small class="d-block mt-5" elevation="0">選択</v-btn>
-
+        <v-file-input
+          class="mt-4"
+          truncate-length="15" accept=".png, .jpg, .jpeg"
+          label="File input"
+          @change="log"
+          ></v-file-input>
       </v-col>
       <v-col cols="12" md="9">
         <p class="text-caption">ユーザー名</p>
@@ -56,10 +60,13 @@
 </template>
 
 <script>
+// import { ref } from 'firebase/storage';
+// import { storage } from '@/plugins/firebase';
 export default {
   layout: 'empty',
   data(){
     return {
+      imageName: '',
       loginUserUid: '',
       image_src: require('@/static/logo.png'),
       valid: false,
@@ -92,6 +99,16 @@ export default {
       if(!result) return
       this.$store.dispatch('userInfo/editMyProfile', this.myProfile)
       this.$router.push(`/myPage/${this.loginUserUid}`)
+    },
+    log(e){
+      if(!(e === null)){
+        this.imageName = 'images/' + e.name;
+        this.myProfile.iconURL = this.imageName;
+        console.log(this.myProfile.iconURL);
+        console.log('画像変更', 'images/' + e.name)
+      }else{
+        console.log('アイコンを初期値に', e)
+      }
     }
   }
 }
@@ -109,3 +126,27 @@ export default {
 
 
 
+<v-avatar class="avatar-size"
+              ><img v-if="uploadImageUrl" :src="uploadImageUrl" /></v-avatar
+            ><v-file-input
+              v-model="input_image"
+              accept="image/*"
+              show-size
+              label="画像をアップロード"
+              @change="onImagePicked"
+            ></v-file-input>
+
+                onImagePicked(file) {
+      if (file !== undefined && file !== null) {
+        if (file.name.lastIndexOf(".")) {
+          return;
+        }
+        const fr = new FileReader();
+        fr.readAsDataURL(file);
+        fr.addEventListener("load", () => {
+          this.uploadImageUrl = fr.result;
+        });
+      } else {
+        this.uploadImageUrl = "";
+      }
+    },

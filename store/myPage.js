@@ -8,7 +8,7 @@ export const state = () => ({
     userName: '',
     introduction: '',
     myPageUid: '',
-    iconURL: "https://cdn.vuetifyjs.com/images/john.jpg"
+    iconURL: "https://user-images.githubusercontent.com/88731483/167774212-a3be4308-42ee-4a7b-89ff-88626929a7c3.png"
   },
   myPosts:[],
   myFavoritePosts:[],
@@ -56,7 +56,7 @@ export const mutations = {
     state.myProfile.userName = '';
     state.myProfile.introduction = '';
     state.myProfile.myPageUid = '';
-    state.myProfile.iconURL = 'https://cdn.vuetifyjs.com/images/cards/sunshine.jpg';
+    state.myProfile.iconURL = "https://user-images.githubusercontent.com/88731483/167774212-a3be4308-42ee-4a7b-89ff-88626929a7c3.png";
     state.myPosts = [];
     state.myFavoritePosts = [];
   },

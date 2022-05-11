@@ -61,7 +61,7 @@
       </v-card-actions>
 
 
-    <v-divider class="mx-4"></v-divider>
+    <v-divider class="my-4"></v-divider>
 
           <v-btn
             rounded
