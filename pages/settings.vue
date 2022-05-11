@@ -129,7 +129,7 @@ export default {
         await deleteUser(user)
         this.$store.dispatch('auth/deleteUser', additionalInfo);
       }catch(error){
-        console.log(error)
+        console.error(error)
       }
     },
   }

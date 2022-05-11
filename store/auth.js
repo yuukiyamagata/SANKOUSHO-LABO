@@ -83,7 +83,7 @@ export const actions = {
           this.$router.push('/')
         }catch(error){
           const credential = GoogleAuthProvider.credentialFromError(error);
-          console.log({ 'code': error.code, 'message': error.message, credential }) // eslint-disable-line
+          console.error({ 'code': error.code, 'message': error.message, credential }) // eslint-disable-line
           alert('ログインに失敗しました')
         }
       },
@@ -124,7 +124,6 @@ export const actions = {
     },
 
     async deleteUser({ dispatch }, { uid, message }){
-      console.log(uid);
       const usersRef = doc(collection(db, 'users'), uid);
       try{
           await deleteDoc(usersRef)

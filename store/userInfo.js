@@ -100,7 +100,6 @@ export const actions = {
       try {
           const docRef = doc(db, 'users', userUid)
           const docSnap = await getDoc(docRef)
-          console.log(docSnap.data())
           commit('fetchUserInfo', docSnap.data())
       } catch(error) {
           console.log(error)
