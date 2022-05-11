@@ -19,8 +19,12 @@
         <v-avatar class="my-n14">
           <v-img :src="myProfile.iconURL"></v-img>
         </v-avatar>
-        <v-btn small class="d-block mt-5" elevation="0">選択</v-btn>
-
+        <v-file-input
+          class="mt-4" truncate-length="15"
+          accept="image/*"
+          label="File input"
+          @change="onFileUpload"
+          ></v-file-input>
       </v-col>
       <v-col cols="12" md="9">
         <p class="text-caption">ユーザー名</p>
@@ -38,7 +42,7 @@
         <v-textarea
           v-model="myProfile.introduction"
           class="mt-n4"
-          placeholder="プロフィールを入力（最大200文字）"
+          placeholder="プロフィールを入力（最大400文字）"
           dense
           outlined
           :rules="introductionRules"
@@ -56,11 +60,15 @@
 </template>
 
 <script>
+// import { ref } from 'firebase/storage';
+// import { storage } from '@/plugins/firebase';
 export default {
   layout: 'empty',
   data(){
     return {
-      loginUserUid: '',
+      imageName: '',
+      uid: '',
+      inputFile: '',
       image_src: require('@/static/logo.png'),
       valid: false,
       userNameRules: [
@@ -71,27 +79,47 @@ export default {
         (v) => (v && v.length <= 400) || "最大400文字です"
       ],
       myProfile:{
-        userName:'',
-        introduction: '',
-        iconURL: '',
-      },
+        userName: '',
+        iconURL:'',
+        introduction:'',
+      }
+    }
+  },
+  computed:{
+    userName(){
+      return this.$store.getters['myPage/myProfile'].userName;
+    },
+    introduction(){
+      return this.$store.getters['myPage/myProfile'].introduction;
+    },
+    iconURL(){
+      return this.$store.getters['myPage/myProfile'].iconURL;
     }
   },
   created(){
-    this.loginUserUid = this.$route.params.mypageEdit
-    this.myProfile.userName = this.$store.getters['myPage/myProfile'].userName
-    this.myProfile.introduction = this.$store.getters['myPage/myProfile'].introduction
-    this.myProfile.iconURL = this.$store.getters['myPage/myProfile'].iconURL
+    this.uid = this.$route.params.mypageEdit;
+    this.myProfile.userName = this.userName;
+    this.myProfile.introduction = this.introduction;
+    this.myProfile.iconURL = this.iconURL;
   },
   methods:{
     goToMyPage(){
-      this.$router.push(`/myPage/${this.loginUserUid}`);
+      this.$router.push(`/myPage/${this.uid}`);
     },
     saveEditProfile(){
       const result = confirm("この内容で保存してもよろしいですか？")
       if(!result) return
-      this.$store.dispatch('userInfo/editMyProfile', this.myProfile)
-      this.$router.push(`/myPage/${this.loginUserUid}`)
+      this.$store.dispatch('userInfo/editMyProfile', this.myProfile);
+      this.$router.push(`/myPage/${this.uid}`)
+    },
+    onFileUpload(file){
+      if(!(file=== null)){
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => { this.myProfile.iconURL = reader.result; };
+      }else{
+        this.myProfile.iconURL = this.iconURL;
+      }
     }
   }
 }
@@ -105,7 +133,6 @@ export default {
 }
 
 </style>
-
 
 
 

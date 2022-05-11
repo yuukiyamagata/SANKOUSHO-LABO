@@ -40,8 +40,10 @@ import { auth, db } from '@/plugins/firebase';
       state.userEmail = email;
     },
     changeDialog(state){
-      console.log(getters.dialog)
       state.dialog = !state.dialog;
+    },
+    resetDialog(state){
+      state.dialog = false;
     }
   }
 
@@ -53,7 +55,7 @@ export const actions = {
           const isNewUser = getAdditionalUserInfo(userCredential).isNewUser // 初回ログインの確認
           await updateProfile(userCredential.user, {
             displayName: userName,
-            photoURL: "https://cdn.vuetifyjs.com/images/john.jpg"
+            photoURL: "https://user-images.githubusercontent.com/88731483/167774212-a3be4308-42ee-4a7b-89ff-88626929a7c3.png"
           })
           dispatch('userInfo/setUserInfo', userCredential.user, { root: true})
           dispatch('userInfo/createUser', isNewUser, { root: true })
@@ -110,7 +112,7 @@ export const actions = {
           await signOut(auth);
           commit('setUserEmail', '');
           commit('setLoginState', false);
-          commit('changeDialog', false)
+          commit('resetDialog');
           commit('userInfo/logoutReset', null, { root: true });
           commit('post/logoutReset', null, { root: true });
           commit('myPage/logoutReset', null, { root: true });

@@ -46,7 +46,7 @@
               <v-row no-gutters>
                 <v-col cols="2">
                   <v-list-item class="pl-0 mr-4 pt-3">
-                    <v-list-item-avatar color="grey darken-3">
+                    <v-list-item-avatar>
                       <v-img
                           :alt="`${sankousho.iconURL} avatar`"
                           :src="sankousho.iconURL"
@@ -142,8 +142,8 @@ export default {
     }
   },
   created(){
-    this.$store.dispatch('post/initialize')
-    this.$store.dispatch('post/getPost')
+    this.$store.dispatch('post/initialize');
+    this.$store.dispatch('post/getPost');
   },
   methods:{
     pageChange( pageNumber ){
