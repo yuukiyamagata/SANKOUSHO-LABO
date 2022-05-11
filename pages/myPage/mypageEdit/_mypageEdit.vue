@@ -23,7 +23,7 @@
           class="mt-4" truncate-length="15"
           accept="image/*"
           label="File input"
-          @change="log"
+          @change="onFileUpload"
           ></v-file-input>
       </v-col>
       <v-col cols="12" md="9">
@@ -112,11 +112,11 @@ export default {
       this.$store.dispatch('userInfo/editMyProfile', this.myProfile);
       this.$router.push(`/myPage/${this.uid}`)
     },
-    log(file){
+    onFileUpload(file){
       if(!(file=== null)){
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = (e) => { this.myProfile.iconURL = reader.result; };
+        reader.onload = () => { this.myProfile.iconURL = reader.result; };
       }else{
         this.myProfile.iconURL = this.iconURL;
       }
