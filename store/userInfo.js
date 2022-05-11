@@ -102,7 +102,7 @@ export const actions = {
           const docSnap = await getDoc(docRef)
           commit('fetchUserInfo', docSnap.data())
       } catch(error) {
-          console.log(error)
+          console.error(error)
       }
     },
     async editMyProfile({ dispatch, getters, commit }, myProfile){
