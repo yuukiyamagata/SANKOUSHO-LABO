@@ -20,8 +20,8 @@
           <v-img :src="myProfile.iconURL"></v-img>
         </v-avatar>
         <v-file-input
-          class="mt-4"
-          truncate-length="15" accept=".png, .jpg, .jpeg"
+          class="mt-4" truncate-length="15"
+          accept="image/*"
           label="File input"
           @change="log"
           ></v-file-input>
@@ -42,7 +42,7 @@
         <v-textarea
           v-model="myProfile.introduction"
           class="mt-n4"
-          placeholder="プロフィールを入力（最大200文字）"
+          placeholder="プロフィールを入力（最大400文字）"
           dense
           outlined
           :rules="introductionRules"
@@ -67,7 +67,8 @@ export default {
   data(){
     return {
       imageName: '',
-      loginUserUid: '',
+      uid: '',
+      inputFile: '',
       image_src: require('@/static/logo.png'),
       valid: false,
       userNameRules: [
@@ -78,36 +79,46 @@ export default {
         (v) => (v && v.length <= 400) || "最大400文字です"
       ],
       myProfile:{
-        userName:'',
-        introduction: '',
-        iconURL: '',
-      },
+        userName: '',
+        iconURL:'',
+        introduction:'',
+      }
+    }
+  },
+  computed:{
+    userName(){
+      return this.$store.getters['myPage/myProfile'].userName;
+    },
+    introduction(){
+      return this.$store.getters['myPage/myProfile'].introduction;
+    },
+    iconURL(){
+      return this.$store.getters['myPage/myProfile'].iconURL;
     }
   },
   created(){
-    this.loginUserUid = this.$route.params.mypageEdit
-    this.myProfile.userName = this.$store.getters['myPage/myProfile'].userName
-    this.myProfile.introduction = this.$store.getters['myPage/myProfile'].introduction
-    this.myProfile.iconURL = this.$store.getters['myPage/myProfile'].iconURL
+    this.uid = this.$route.params.mypageEdit;
+    this.myProfile.userName = this.userName;
+    this.myProfile.introduction = this.introduction;
+    this.myProfile.iconURL = this.iconURL;
   },
   methods:{
     goToMyPage(){
-      this.$router.push(`/myPage/${this.loginUserUid}`);
+      this.$router.push(`/myPage/${this.uid}`);
     },
     saveEditProfile(){
       const result = confirm("この内容で保存してもよろしいですか？")
       if(!result) return
-      this.$store.dispatch('userInfo/editMyProfile', this.myProfile)
-      this.$router.push(`/myPage/${this.loginUserUid}`)
+      this.$store.dispatch('userInfo/editMyProfile', this.myProfile);
+      this.$router.push(`/myPage/${this.uid}`)
     },
-    log(e){
-      if(!(e === null)){
-        this.imageName = 'images/' + e.name;
-        this.myProfile.iconURL = this.imageName;
-        console.log(this.myProfile.iconURL);
-        console.log('画像変更', 'images/' + e.name)
+    log(file){
+      if(!(file=== null)){
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => { this.myProfile.iconURL = reader.result; };
       }else{
-        console.log('アイコンを初期値に', e)
+        this.myProfile.iconURL = this.iconURL;
       }
     }
   }
@@ -125,28 +136,3 @@ export default {
 
 
 
-
-<v-avatar class="avatar-size"
-              ><img v-if="uploadImageUrl" :src="uploadImageUrl" /></v-avatar
-            ><v-file-input
-              v-model="input_image"
-              accept="image/*"
-              show-size
-              label="画像をアップロード"
-              @change="onImagePicked"
-            ></v-file-input>
-
-                onImagePicked(file) {
-      if (file !== undefined && file !== null) {
-        if (file.name.lastIndexOf(".")) {
-          return;
-        }
-        const fr = new FileReader();
-        fr.readAsDataURL(file);
-        fr.addEventListener("load", () => {
-          this.uploadImageUrl = fr.result;
-        });
-      } else {
-        this.uploadImageUrl = "";
-      }
-    },
