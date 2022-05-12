@@ -1,21 +1,19 @@
 <template>
-  <div :class="['pb-8', {'bg-main': !noBook}]">
-    <v-card
-      tile
-    >
+  <div class="bg-main pb-8">
+    <v-card tile>
       <v-tabs
         center-active
         background-color="transparent"
         >
         <v-tab
         v-for="subject in subjects"
-        :key="subject"
-        @click="filterSubject(subject)"
-        >{{ subject }}</v-tab>
+        :key="subject.id"
+        @click="filterSubject(subject.name)"
+        >{{ subject.name }}</v-tab>
       </v-tabs>
     </v-card>
 
-    <v-container v-if="!noBook" fluid>
+    <v-container fluid>
       <h3 class="headline font-weight-medium my-8">Recommended Post</h3>
       <v-row>
         <v-col
@@ -76,22 +74,30 @@
 
 
 
-      <!-- <v-row v-if="displayLists.length < 12" class="mb-10" >
-        <v-col  class="text-center">
-          <v-pagination
-            v-model="page"
-            :length="length"
-            circle
-            @input ="pageChange"
-          ></v-pagination>
+      <v-row class="mb-10" >
+        <v-col v-show="!categorySearch" class="text-center">
+          <v-btn
+          v-if="!noData"
+          rounded
+          class="my-6 px-8"
+          color="blue accent-4 white--text"
+          @click="morePosts"
+          >
+          もっと見る
+          </v-btn>
+          <p v-else>Sorry..., No more Data</p>
         </v-col>
-      </v-row> -->
-    </v-container>
-
-    <v-container v-if="noBook">
-      <v-row>
-        <v-col cols="12">
-          <div>フィルター検索の結果は「０件」でした</div>
+        <v-col v-show="categorySearch" class="text-center">
+          <v-btn
+          v-if="!noSubjectData"
+          rounded
+          class="my-6 px-8"
+          color="green accent-4 white--text"
+          @click="moreFilterPosts"
+          >
+          もっと見る
+          </v-btn>
+          <p v-else>Sorry..., No more Data</p>
         </v-col>
       </v-row>
     </v-container>
@@ -105,50 +111,48 @@
 <script>
 
 export default {
-  filters:{
-    omittedText15(text) {
-      return text.length > 15 ? text.slice(0, 15) + "…" : text;
+filters:{
+  omittedText15(text) {
+    return text.length > 15 ? text.slice(0, 15) + "…" : text;
+  },
+},
+data(){
+  return{
+    categorySearch: false,
+    currentFilteredSubject: '',
+    subjects:[
+      {id: 0, name: '全て'},
+      {id: 1, name: '英語'},
+      {id: 2, name: '数学'},
+      {id: 3, name: '現代文,古文,漢文'},
+      {id: 4, name: '化学'},
+      {id: 5, name: '物理'},
+      {id: 6, name: '生物'},
+      {id: 7, name: '地学'},
+      {id: 8, name: '日本史'},
+      {id: 9, name: '世界史'},
+      {id: 10, name: '政治経済,倫理'},
+    ],
+  }
+},
+computed:{
+  postRecommendations(){
+      return this.$store.getters['post/recommendationPosts']
+  },
+  noData(){
+      return this.$store.getters['post/noData']
+      // 「もっと見る」でデータがない場合「true」存在するなら「false」
     },
+  noSubjectData(){
+    return this.$store.getters['post/noSubjectData']
+    // フィルター検索の「もっと見る」がゼロなら「true」存在するなら「false」
   },
-  data(){
-    // displayListにはブラウザに表示させるデータのみ持たせる
-    return{
-      page: 1,
-      // length:0,
-      // displayLists: [],
-      pageSize: 12,
-      categorySearch: false,
-    }
-  },
-  computed:{
-    postRecommendations(){
-      if(!this.categorySearch){
-        return this.$store.getters['post/recommendationPosts']
-      }else{
-        return this.$store.getters['post/filteredRecommendationPosts']
-      }
-    },
-    // length(){
-    //   return Math.ceil(this.postRecommendations.length/this.pageSize)
-    // },
-    // displayLists(){
-    //   return this.postRecommendations.slice(this.pageSize*(this.page -1), this.pageSize*(this.page));
-    // },
-    subjects(){
-      return this.$store.getters['post/subjects']
-    },
-    noBook(){
-      return this.$store.getters['post/noBook']
-    }
-  },
-  created(){
-    this.$store.dispatch('post/initialize');
-    this.$store.dispatch('post/getPost');
-  },
-  methods:{
-    pageChange( pageNumber ){
-    this.displayLists = this.postRecommendations.slice(this.pageSize*( pageNumber  -1), this.pageSize*( pageNumber ));
-  },
+},
+created(){
+  this.$store.dispatch('post/initialize');
+  this.$store.dispatch('post/fetchPosts');
+},
+methods:{
   goToDetailPage(sankousho){
     this.$router.push(`/books/${sankousho.recommendation_book_id }`)
   },
@@ -156,14 +160,24 @@ export default {
     this.$router.push(`/myPage/${id}`)
   },
   filterSubject(subject){
-    if(subject === "全て"){
-      this.categorySearch = false
-      return
+    if(subject === '全て'){
+      this.categorySearch = false;
+      this.$store.dispatch('post/initialize');
+      this.$store.dispatch('post/fetchPosts');
+      return;
     }
-    this.categorySearch = true
-    this.$store.dispatch('post/filterSubject', subject)
-    }
+    this.categorySearch = true;
+    this.currentFilteredSubject = subject
+    this.$store.dispatch('post/initialize');
+    this.$store.dispatch('post/filterSubject', this.currentFilteredSubject);
+  },
+  morePosts(){
+    this.$store.dispatch('post/fetchPosts');
+  },
+  moreFilterPosts(){
+    this.$store.dispatch('post/filterSubject', this.currentFilteredSubject);
   }
+}
 
 }
 </script>

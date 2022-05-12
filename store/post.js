@@ -1,92 +1,94 @@
-import { collection, query,orderBy, getDocs, where } from 'firebase/firestore'
+import { collection, query, orderBy, getDocs, where, startAfter, limit } from 'firebase/firestore'
 import { db } from '@/plugins/firebase';
 
+let lastVisible = '';
+let categoryLastVisible = '';
+
 export const state = () => ({
-  subjects:[
-    '全て',
-    '数学',
-    '英語',
-    '現代文,古文,漢文',
-    '化学',
-    '物理',
-    '生物',
-    '地学',
-    '日本史',
-    '世界史',
-    '地理',
-    '政治経済,倫理',
-  ],
-  recommendationPosts: null,
-  filteredRecommendationPosts: null,
-  noBook: false
+  recommendationPosts: [],
+  noData: false,
+  noSubjectData: false,
 })
 
 export const getters = {
   recommendationPosts: state => state.recommendationPosts,
-  filteredRecommendationPosts : state => state.filteredRecommendationPosts,
-  subjects: state => state.subjects,
-  noBook: state => state.noBook,
-  myFavoritePost: state => state.myFavoritePost
+  noData: state => state.noData,
+  noSubjectData: state => state.noSubjectData,
 }
 
 export const mutations = {
   initialize(state){
-    state.recommendationPosts = null
-    state.filteredRecommendationPosts = null
-    state.noBook = false
+    state.recommendationPosts = [];
+    state.noData = false;
+    state.noSubjectData = false;
+    lastVisible = '';
+    categoryLastVisible = '';
   },
-  setPostInfo(state, recommendationPosts) {
-    state.recommendationPosts = recommendationPosts
+  pushPosts(state, posts) {
+    state.recommendationPosts.push(posts)
   },
-  filterPost(state, filteredRecommendationPosts){
-    state.noBook = false
-    state.filteredRecommendationPosts = filteredRecommendationPosts
+  noData(state){
+    state.noData = true;
+    // 「もっと見る」のデータが存在しない場合「true」存在する場合「false」
   },
-  noBook(state){
-    state.noBook = true
+  noSubjectData(state){
+    state.noSubjectData = true;
+    // フィルター検索の「もっと見る」のデータが存在しない場合「true」存在する場合「false」
   },
   logoutReset(state){
-    state.filteredRecommendationPosts = null;
-    state.noBook = false;
+    state.noData = false;
+    state.noSubjectData = false;
+    lastVisible = '';
+    categoryLastVisible = '';
   }
 }
 
 export const actions = {
   initialize( { commit }){
-    // 読み込み時のVuexの初期化処理
-    commit('initialize')
+    commit('initialize') // 読み込み時の初期化処理
   },
-  async getPost({ commit }){
+  async fetchPosts({ commit }){
     const postRef = collection(db, "post_recommendations")
-    const postQuery = query(postRef, orderBy("created_at", "desc"));
-    try {
-      // 作成日時順に並べるようにqueryを投げる
-      const querySnapshot = await getDocs(postQuery);
-      const postsData = querySnapshot.docs.map(doc => doc.data())
-      commit('setPostInfo', postsData)
-    }catch( e ){
-      alert('データの取得に失敗しました')
-      location.reload();
-    }
-  },
-  async filterSubject( { commit }, subject){
-    const postRef = collection(db, "post_recommendations")
-    const subjectQuery = query(postRef, where("recommendation_book_category", "==", subject), orderBy("created_at", "desc"))
-    try{
-      const querySnapshot = await getDocs(subjectQuery)
-      if(!querySnapshot.empty){
-        // querySnapshot.emptyはデータがない場合false、存在する場合true
-        const filteredSubjects = querySnapshot.docs.map(subject => subject.data());
-        commit("filterPost", filteredSubjects)
-      }else{
-        commit("noBook")
+    const postQuery = query(
+      postRef,
+      orderBy("created_at", "desc"),
+      startAfter(lastVisible),
+      limit(12)
+    );
+    // 作成日時順、最新十件のquery
+      try {
+        const querySnapshot = await getDocs(postQuery);
+        lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+        if(!lastVisible) commit('noData');
+        querySnapshot.forEach(doc => {
+          commit('pushPosts', doc.data())
+        })
+      }catch( e ){
+        console.error(e)
+        alert('データの取得に失敗しました。');
       }
-    }catch(e){
-      alert('データの取得に失敗しました')
-      location.reload();
-      console.error( e )
-    }
-  },
+    },
+  async filterSubject( { commit }, subject){
+      const postRef = collection(db, "post_recommendations")
+      const subjectQuery = query(
+            postRef,
+            where("recommendation_book_category","==", subject),
+            orderBy("created_at", "desc"),
+            startAfter(categoryLastVisible),
+            limit(12)
+          )
+      try{
+          const querySnapshot = await getDocs(subjectQuery);
+          categoryLastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+          if(!categoryLastVisible){
+            commit('noSubjectData');
+            return;
+          }
+          querySnapshot.forEach(doc => {commit('pushPosts', doc.data());})
+      }catch(e){
+        console.error(e)
+      }
+    },
   logoutReset({ commit }){
     commit("logoutReset")
   }
