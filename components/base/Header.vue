@@ -18,35 +18,41 @@
 
 
     <!-- 未ログイン -->
-      <nuxt-link to="/auth/login" class="link-border-line-none">
-          <span v-if="!isLoggedIn">
-            <v-btn
-              outlined
-              color="indigo"
-              class="mr-4">
-                ログイン
-            </v-btn>
-          </span>
-      </nuxt-link>
-      <nuxt-link to="/auth/register" class="link-border-line-none">
-          <span v-if="!isLoggedIn">
-            <v-btn
-              outlined
-              color="teal"
-              >
-                新規登録
-            </v-btn>
-          </span>
-      </nuxt-link>
+        <v-btn
+          v-if="!isLoggedIn"
+          class="mr-4"
+          @click="anonymousLogin"
+        >
+        ゲストログイン
+        </v-btn>
+
+      <v-toolbar-items v-if="!isLoggedIn">
+          <v-btn
+            text
+            color="indigo"
+            class="mr-4"
+            to="/auth/login"
+            >
+            ログイン
+          </v-btn>
+
+          <v-btn
+            text
+            color="teal"
+            to="/auth/register"
+            >
+              新規登録
+          </v-btn>
+      </v-toolbar-items>
 
       <!-- ログイン済 -->
-      <div v-if="isLoggedIn">
 
-        <v-avatar size="53">
+        <v-avatar v-if=isLoggedIn size="53">
           <v-img :src="iconURL" />
         </v-avatar>
 
         <v-btn
+          v-if="isLoggedIn"
           elevation="0"
           color="indigo"
           class="ml-4 white--text"
@@ -55,8 +61,6 @@
           <v-icon small class="mr-2">mdi-pencil</v-icon>
           投稿
         </v-btn>
-
-      </div>
 
 
   </v-app-bar>
@@ -92,6 +96,9 @@ export default {
     }
   },
   methods:{
+    anonymousLogin(){
+      this.$store.dispatch('auth/anonymousLogin');
+    },
     drawerChange(){
       this.$refs.navDrawer.drawer = !this.$refs.navDrawer.drawer;
     },

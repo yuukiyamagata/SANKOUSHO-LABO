@@ -110,7 +110,6 @@
       }else{
         this.isMySelf = false;
       }
-
     },
     methods:{
       goToEditMyPage(){

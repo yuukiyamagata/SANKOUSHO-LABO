@@ -1,6 +1,9 @@
 <template>
   <div class="py-5">
     <Loading />
+    <div>
+      <v-btn to="/">戻る</v-btn>
+    </div>
   <v-card
     class="mx-auto text-center"
     maxWidth="384"
@@ -55,6 +58,7 @@
           color="primary"
           elevation="0"
           class="mb-4 auth-button-width"
+          @click="anonymousLogin"
         >
         匿名ユーザーでログインする
       </v-btn>
@@ -141,6 +145,9 @@ export default {
     // Googleで新規登録
     singInWithGoogle(){
       this.$store.dispatch('auth/signInWithGoogle')
+    },
+    anonymousLogin(){
+      this.$store.dispatch('auth/anonymousLogin');
     },
   }
 

@@ -115,7 +115,7 @@ import { db } from '@/plugins/firebase';
       selectListAction(actionName, id){
         let executeFunc;
         switch(actionName){
-          case  "deletePost":
+          case "deletePost":
             executeFunc = this.deletePost;
             break;
           case "watchDetail":

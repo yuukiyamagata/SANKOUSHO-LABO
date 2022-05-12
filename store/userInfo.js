@@ -41,11 +41,11 @@ export const mutations = {
     state.user.iconURL = userInfo.photoURL
     state.user.emailVerified = userInfo.emailVerified
   },
-  fetchUserInfo(state, userData){
-    state.loginUserInfo.userName = userData.userName
-    state.loginUserInfo.introduction = userData.introduction
-    state.loginUserInfo.iconURL = userData.iconURL
-    state.loginUserInfo.loginUserUid = userData.uid
+  fetchUserInfo(state, fetchData){
+    state.loginUserInfo.userName = fetchData.userName
+    state.loginUserInfo.introduction = fetchData.introduction
+    state.loginUserInfo.iconURL = fetchData.iconURL
+    state.loginUserInfo.loginUserUid = fetchData.uid
   },
   editMyProfile(state, myPageInfo){
     state.loginUserInfo.userName = myPageInfo.userName
@@ -95,7 +95,7 @@ export const actions = {
         alert("ログインに失敗しました");
       }
     },
-    async fetchUserInfo({ getters, commit, dispatch }) {
+    async fetchUserInfo({ getters, commit }) {
       const userUid = getters.user.userUid
       try {
           const docRef = doc(db, 'users', userUid)

@@ -6,7 +6,8 @@ import {
         GoogleAuthProvider,
         signInWithPopup,
         signInWithEmailAndPassword,
-        signOut
+        signOut,
+        signInAnonymously,
       } from 'firebase/auth'
 import {
         collection,
@@ -118,6 +119,21 @@ export const actions = {
           }
         }
       },
+
+    async anonymousLogin({ dispatch, commit }){
+      commit('onLoading', true);
+      // commit('userInfo/setUserInfo')
+      try{
+        await signInAnonymously(auth);
+        const email = 'hgehugafoo@bar.com';
+        commit('setUserEmail', email);
+        dispatch('userInfo/fetchUserInfo', null, { root: true });
+        alert('ゲストログインに成功しました')
+        commit('onLoading', false);
+      }catch(e){
+        console.error(e)
+      }
+    },
 
     async logout({ commit }, message ) {
         try{
