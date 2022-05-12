@@ -45,12 +45,6 @@
       <v-divider></v-divider>
         <v-tabs>
         <v-tab
-          v-if="isLoggedIn && isMySelf"
-          @click="goToMyHome"
-        >
-          Home
-        </v-tab>
-        <v-tab
           v-for="tab in tabMenu"
           :key="tab.tabText"
           @click="changeTabMenu(tab.link)"
@@ -75,6 +69,7 @@
     data(){
       return {
         tabMenu:[
+          {tabText: 'Home', link: 'Home'},
           {tabText: 'MyPost', link: 'myPost'},
           {tabText: 'favorite', link: 'favorite'},
         ],
@@ -110,21 +105,19 @@
       }else{
         this.isMySelf = false;
       }
-
     },
     methods:{
       goToEditMyPage(){
         this.$router.push(`/myPage/myPageEdit/${this.myPageUid}`)
       },
-      goToMyHome(){
-        this.$router.push(`/myPage/${this.myPageUid}`)
-      },
       changeTabMenu(link){
         if(link === 'myPost'){
           this.$router.push(`/myPage/${this.myPageUid}/myPost`);
-        }else{
+        }else if(link === 'favorite'){
             this.$router.push(`/myPage/${this.myPageUid}/favorite`);
-          }
+        }else{
+          this.$router.push(`/myPage/${this.myPageUid}`);
+        }
       },
     }
   }

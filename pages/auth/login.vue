@@ -36,6 +36,7 @@
           color="primary"
           elevation="0"
           class="mb-4 auth-button-width"
+          @click="anonymousLogin"
         >
           匿名ユーザーでログインする
         </v-btn>
@@ -94,7 +95,10 @@ export default {
     },
     loginWithGoogle() {
       this.$store.dispatch('auth/signInWithGoogle')
-    }
+    },
+    anonymousLogin(){
+      this.$store.dispatch('auth/anonymousLogin');
+    },
   }
 
 }
