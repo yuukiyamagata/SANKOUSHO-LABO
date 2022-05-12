@@ -39,6 +39,32 @@
 
   </v-card>
 </v-container>
+<v-container v-else class="mb-10">
+  <v-row>
+  <v-col cols="12">
+    <v-card width="400">
+      <v-subheader class="text-left">
+        @{{ userInfo.userName }}さんは
+      </v-subheader>
+
+        <v-list>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title v-if="myPostsHistory" class="indigo--text">これまで{{ myPostsHistory }}件投稿しました</v-list-item-title>
+                <v-list-item-title v-else>まだ投稿していません</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-content>
+                <v-list-item-title v-if="myFavPostsHistory" class="teal--text">これまで{{ myFavPostsHistory }}件お気に入り登録しました</v-list-item-title>
+                <v-list-item-title v-else>お気に入り登録はまだしていません</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+        </v-list>
+      </v-card>
+  </v-col>
+  </v-row>
+</v-container>
 </template>
 
 
@@ -53,7 +79,18 @@
       isMySelf:{
         type: Boolean,
         require: true,
-      }
+      },
+    },
+    computed:{
+      myPostsHistory(){
+        return this.$store.getters['myPage/myPosts'].length
+      },
+      myFavPostsHistory(){
+        return this.$store.getters['myPage/myFavoritePosts'].length
+      },
+      userInfo(){
+        return this.$store.getters['myPage/myProfile']
+      },
     },
     methods:{
       createPost(){

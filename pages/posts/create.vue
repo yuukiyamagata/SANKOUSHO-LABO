@@ -227,13 +227,14 @@ export default {
               const title = book.Item.title
               const author = book.Item.author
               const imageUrl = book.Item.largeImageUrl
+              const publisherName = book.Item.publisherName
               const itemUrl = book.Item.itemUrl
               const id = this.searchResults.length + 1
 
               this.searchResults.push({
                 id,
                 title,
-                author,
+                author: author ? author : publisherName, // eslint-disable-line
                 imageUrl,
                 itemUrl,
               })

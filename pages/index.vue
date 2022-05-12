@@ -1,5 +1,6 @@
 <template>
   <div class="bg-main pb-8">
+    <Loading :isLoading="isLoading" />
     <v-card tile>
       <v-tabs
         center-active
@@ -92,7 +93,7 @@
           v-if="!noSubjectData"
           rounded
           class="my-6 px-8"
-          color="green accent-4 white--text"
+          color="blue accent-4 white--text"
           @click="moreFilterPosts"
           >
           もっと見る
@@ -109,8 +110,11 @@
 
 
 <script>
-
+import  Loading  from '@/components/Loading'
 export default {
+components:{
+  Loading,
+},
 filters:{
   omittedText15(text) {
     return text.length > 15 ? text.slice(0, 15) + "…" : text;
@@ -136,6 +140,9 @@ data(){
   }
 },
 computed:{
+  isLoading(){
+    return this.$store.getters['auth/isLoading']
+  },
   postRecommendations(){
       return this.$store.getters['post/recommendationPosts']
   },
