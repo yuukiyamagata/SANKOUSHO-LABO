@@ -122,7 +122,6 @@ export const actions = {
 
     async anonymousLogin({ dispatch, commit }){
       commit('onLoading', true);
-      // commit('userInfo/setUserInfo')
       try{
         await signInAnonymously(auth);
         const email = 'hgehugafoo@bar.com';

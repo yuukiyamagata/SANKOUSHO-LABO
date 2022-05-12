@@ -36,7 +36,7 @@ export const getters = {
 
 export const mutations = {
   setUserInfo(state, userInfo){
-    state.user.userUid = userInfo.uid, // eslint-disable-line
+    state.user.userUid = userInfo.uid,
     state.user.userName = userInfo.displayName,
     state.user.iconURL = userInfo.photoURL
     state.user.emailVerified = userInfo.emailVerified
