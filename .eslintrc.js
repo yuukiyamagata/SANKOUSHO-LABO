@@ -17,7 +17,7 @@ module.exports = {
     }],
     // "no-restricted-syntax": ["error", "SequenceExpression"],
     "vue/attribute-hyphenation": ["error", "never" , {
-      "ignore":["max-width", "aspect-ration", "clipped-left", "open-on-hover", "no-gutters", "three-line", "vue-loading","center-active", "background-color", "x-large", "v-bind", "truncate-length", "offset-sm"]
+      "ignore":["max-width", "aspect-ration", "clipped-left", "open-on-hover", "no-gutters", "three-line", "vue-loading","center-active", "background-color", "x-large", "v-bind", "truncate-length", "offset-sm", "vue-loading"]
     }],
     "no-console": "off",
         "no-restricted-syntax": [
