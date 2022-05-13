@@ -171,7 +171,7 @@
         </v-card>
       </v-dialog>
     </div>
-
+  <AuthRequired />
 
   </div>
 </template>
@@ -179,19 +179,21 @@
 
 
 <script>
-import { collection, serverTimestamp, setDoc, doc  } from "firebase/firestore";
+import { collection, serverTimestamp, setDoc, doc, getDoc } from "firebase/firestore";
 import {  db } from "@/plugins/firebase";
+import AuthRequired from '@/components/AuthRequired.vue';
 export default {
+  components:{
+    AuthRequired
+  },
   data(){
     return{
       bookId:'',
       dialog: false,
+      bookDetailInfo:{}
     }
   },
   computed:{
-    bookDetailInfo(){
-      return this.$store.getters['post/recommendationPosts'].find(post => post.recommendation_book_id === this.bookId)
-    },
     emailVerified(){
       return this.$store.getters['userInfo/user'].emailVerified
     },
@@ -206,8 +208,16 @@ export default {
       return favoritePosts.some(favPost => favPost.postedID === this.bookId)
     }
   },
-  created(){
+  async created(){
     this.bookId = this.$route.params.bookId
+    try{
+      const docRef = doc(db, "post_recommendations", this.bookId);
+      const docSnap = await getDoc(docRef)
+      this.bookDetailInfo = docSnap.data();
+
+    }catch(e){
+      console.error(e);
+    }
     this.$store.dispatch('myPage/initMyFavoritePosts')
     this.$store.dispatch('myPage/fetchMyFavoritePosts', this.loginUserUid)
   },
@@ -223,7 +233,7 @@ export default {
   },
   async registerFavPost(){
       if(!this.emailVerified) {
-        alert('確証のお願い')
+        this.$store.commit('auth/changeDialog');
         return
       }
       const result = window.confirm('お気に入りに登録しますか?')

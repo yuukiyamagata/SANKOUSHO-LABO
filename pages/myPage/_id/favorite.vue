@@ -88,7 +88,7 @@ import { db } from '@/plugins/firebase';
     data(){
       return{
       listItems:[
-        {listTitle: '投稿を削除する', action: 'deleteFavPost'},
+        {listTitle: '削除する', action: 'deleteFavPost'},
         {listTitle: '詳細を見る', action: 'watchDetail'},
         ],
       }
