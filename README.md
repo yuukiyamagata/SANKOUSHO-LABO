@@ -7,6 +7,11 @@ https://user-images.githubusercontent.com/88731483/168116160-77057869-9335-4455-
 # アプリURL
 https://myapp-6affc.web.app/
 
+# 環境構築 
+`npm install`
+
+`npm run dev`
+
 # 使用技術
 - Nuxt.js 2.15.8
 - firebase 9.7.0
