@@ -8,9 +8,10 @@ https://user-images.githubusercontent.com/88731483/168116160-77057869-9335-4455-
 https://myapp-6affc.web.app/
 
 # 環境構築 
-`npm install`
+- `node 14.8.3 `
+- `npm install`
+- `npm run dev`
 
-`npm run dev`
 
 # 使用技術
 - Nuxt.js 2.15.8
