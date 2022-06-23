@@ -92,6 +92,7 @@ export const actions = {
       }
   },
   async fetchMyFavoritePosts( { commit }, uid){
+    if(!uid) return;
     try{
       const favPostsRef = collection(db, "users", uid, "favorite_posts");
       const snapShots = await getDocs(favPostsRef);

@@ -218,20 +218,24 @@ export default {
     }catch(e){
       console.error(e);
     }
-    this.$store.dispatch('myPage/initMyFavoritePosts')
+    this.$store.dispatch('myPage/initMyFavoritePosts');
     this.$store.dispatch('myPage/fetchMyFavoritePosts', this.loginUserUid)
   },
   methods:{
-  goToLogin(){
-    this.$router.push('/auth/login');
-  },
-  goToRegister(){
-    this.$router.push('/auth/register');
-  },
-  goToProfile(id){
-    this.$router.push(`/myPage/${id}`)
-  },
+    goToLogin(){
+      this.$router.push('/auth/login');
+    },
+    goToRegister(){
+      this.$router.push('/auth/register');
+    },
+    goToProfile(id){
+      this.$router.push(`/myPage/${id}`)
+    },
   async registerFavPost(){
+      if(!this.isLoggidIn){
+        this.dialog = true;
+        return;
+      }
       if(!this.emailVerified) {
         this.$store.commit('auth/changeDialog');
         return
