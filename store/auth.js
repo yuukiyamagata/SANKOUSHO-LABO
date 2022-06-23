@@ -129,6 +129,7 @@ export const actions = {
         dispatch('userInfo/fetchUserInfo', null, { root: true });
         alert('ゲストログインに成功しました')
         commit('onLoading', false);
+        this.$router.push('/')
       }catch(e){
         console.error(e)
       }
